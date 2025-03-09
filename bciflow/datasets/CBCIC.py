@@ -1,5 +1,5 @@
 import numpy as np
-import scipy
+import scipy.io
 
 def cbcic(subject: int=1, 
           session_list: list=None,

@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling", "numpy", "scipy", "matplotlib", "pandas", "scikit_learn", "emd", "h5py", "PyWavelets"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bciflow"
+version = "1.0.0.dev1"
+authors = [
+  { name="Gabriel de Souza", email="ghdesouza@gmail.com" },
+  { name="Hiero Henrique", email="hierohenrique@gmail.com" },
+  { name="Marcelo M. Amorim", email="marcelodmeloamorim@gmail.com" },
+]
+description = "A package for BCI-related tasks, including dataset loading, preprocessing, feature extraction, and classification."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 3 - Alpha",  
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",  # Adicione o classificador de licença
+]
+license-files = ["LICENSES/*"]
+
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "pandas",
+    "scikit-learn",
+    "emd",
+    "h5py",
+    "PyWavelets",
+]
+
+[project.urls]
+Homepage = "https://github.com/ghdesouza/bciflow"
+Issues = "https://github.com/ghdesouza/bciflow/issues"
