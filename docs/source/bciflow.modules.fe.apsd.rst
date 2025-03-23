@@ -1,6 +1,7 @@
-bciflow.modules.fe.apsd module
-==============================
-
+.. _apsd:
+=======================================
+Average Power Spectral Density (APSD)
+=======================================
 .. automodule:: bciflow.modules.fe.apsd
    :members:
    :show-inheritance:

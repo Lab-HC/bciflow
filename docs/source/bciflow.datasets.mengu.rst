@@ -1,4 +1,4 @@
-MENGU Module
+MenGu
 ============
 
 .. automodule:: bciflow.datasets.mengu

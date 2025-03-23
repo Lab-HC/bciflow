@@ -1,7 +1,38 @@
+'''
+Description
+-----------
+This module implements a convolution-based bandpass filter for EEG data. 
+The `bandpass_conv` function uses a kernel derived from windowed sinc 
+functions to perform the filtering.
+
+Function
+------------
+'''
 import numpy as np
 
 def bandpass_conv(eegdata, low_cut=4, high_cut=40, transition=None, window_type='hamming', kind='same'):
-    
+    '''
+    Parameters
+    ----------
+    eegdata : dict
+        A dictionary containing the EEG data, where the key 'X' holds the 
+        raw signal and 'sfreq' holds the sampling frequency.
+    low_cut : int
+        The lower cutoff frequency of the bandpass filter (default is 4 Hz).
+    high_cut : int
+        The upper cutoff frequency of the bandpass filter (default is 40 Hz).
+    transition : int or float
+        The transition bandwidth for the filter (default is half the passband width).
+    window_type : str
+        The type of window used for the sinc function ('hamming' or 'blackman', default is 'hamming').
+    kind : str
+        The convolution mode ('same' or 'valid', default is 'same').
+
+    Returns
+    -------
+    output : dict
+        The original dictionary with the filtered data stored under the key 'X'.
+    '''
     X = eegdata['X'].copy()
     sfreq = eegdata['sfreq']
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
@@ -45,4 +76,3 @@ def bandpass_conv(eegdata, low_cut=4, high_cut=40, transition=None, window_type=
     X_ = X_.reshape(eegdata['X'].shape)
     eegdata['X'] = X_
     return eegdata
-

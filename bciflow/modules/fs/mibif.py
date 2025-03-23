@@ -1,8 +1,50 @@
+'''
+Description
+-----------
+This module implements the Mutual Information Best Individual Features (MIBIF) feature extractor, 
+which selects the best features based on mutual information between features and labels. 
+This feature is commonly used in BCI applications to reduce dimensionality and improve classification performance.
+
+The MIBIF is calculated using mutual information scores, which measure the dependency between 
+each feature and the target labels.
+
+Class
+------------
+'''
 import numpy as np
 from sklearn.metrics import mutual_info_score
 
 class MIBIF:
+    '''
+    Attributes
+    ----------
+    n_features : int
+        The number of features to be selected.
+    paired : bool
+        Whether the features are paired or not (default is True).
+    order : list
+        The order of the features based on mutual information scores.
+    clf : object
+        The classifier used to calculate the mutual information.
+    pairs : np.ndarray
+        The pairs of features (used when paired=True).
+    '''
     def __init__(self, n_features, clf, paired=True):
+        ''' Initializes the class.
+        
+        Parameters
+        ----------
+        n_features : int
+            The number of features to be selected.
+        clf : object
+            The classifier used to calculate mutual information.
+        paired : bool, optional
+            Whether the features are paired or not (default is True).
+        
+        Returns
+        -------
+        None
+        '''
         self.original_n_features = n_features
         self.n_features = self.original_n_features
         self.paired = paired
@@ -10,6 +52,20 @@ class MIBIF:
         self.clf = clf
 
     def find_pair(self, u, max_col):
+        ''' Finds the pair of a feature.
+
+        Parameters
+        ----------
+        u : int
+            The feature index.
+        max_col : int
+            The maximum number of columns.
+
+        Returns
+        -------
+        int
+            The index of the pair of the feature.
+        '''
         i = int(u / max_col)
         j = u % max_col
         j_pair = max_col - 1 - j
@@ -17,6 +73,18 @@ class MIBIF:
         return u
 
     def fit(self, eegdata):
+        ''' 
+        This method fits the MIBIF feature extractor to the data by calculating mutual information scores.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data, containing 'X' (features) and 'y' (labels).
+            
+        Returns
+        -------
+        self
+        '''
         self.n_features = self.original_n_features
 
         X = eegdata['X'].copy()
@@ -64,6 +132,19 @@ class MIBIF:
         return self
 
     def transform(self, eegdata):
+        '''
+        This method transforms the input data into the selected feature space.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data, containing 'X' (features).
+        
+        Returns
+        -------
+        output : dict
+            The transformed data, containing the selected features.
+        '''
         X = eegdata['X'].copy()
 
         X_ = [X[i].reshape(-1) for i in range(len(X))]
@@ -74,5 +155,19 @@ class MIBIF:
         return eegdata
 
     def fit_transform(self, eegdata):
+        '''
+        This method combines fitting and transforming into a single step. It returns a 
+        dictionary with the transformed data.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data, containing 'X' (features) and 'y' (labels).
+          
+        Returns
+        -------
+        output : dict
+            The transformed data, containing the selected features.
+        '''
         return self.fit(eegdata).transform(eegdata)
 

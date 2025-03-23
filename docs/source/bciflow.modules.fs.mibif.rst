@@ -1,6 +1,7 @@
-bciflow.modules.fs.mibif module
-===============================
-
+.. _mibif:
+============
+Mutual Information Best Individual Features (MIBIF)
+============
 .. automodule:: bciflow.modules.fs.mibif
    :members:
    :show-inheritance:

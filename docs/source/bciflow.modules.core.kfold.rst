@@ -1,6 +1,7 @@
-bciflow.modules.core.kfold module
-=================================
-
+.. _kfold:
+=====
+Kfold
+=====
 .. automodule:: bciflow.modules.core.kfold
    :members:
    :show-inheritance:

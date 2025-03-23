@@ -1,4 +1,4 @@
-CBCIC Module
+CBCIC
 ============
 
 .. automodule:: bciflow.datasets.cbcic

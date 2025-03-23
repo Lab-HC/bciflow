@@ -4,11 +4,6 @@ Description
 This module provides functionality to load EEG data from the CBCIC dataset. 
 It processes the data to fit the requirements of the `eegdata` dictionary, 
 which is used to store and process EEG data.
-
-Dependencies
-------------
-- numpy
-- scipy
 """
 
 import numpy as np
@@ -19,8 +14,6 @@ def cbcic(subject: int = 1,
           labels: list = ['left-hand', 'right-hand'],
           path: str = 'data/cbcic/'):
     """
-    Load EEG data from the CBCIC dataset.
-
     This function loads EEG data for a specific subject and session from the CBCIC dataset.
     It processes the data to fit the structure of the `eegdata` dictionary, which is used
     for further processing and analysis.
@@ -41,16 +34,15 @@ def cbcic(subject: int = 1,
 
     Returns
     -------
-    dict
         A dictionary containing the following keys:
 
-        - **X**: EEG data as a numpy array.
-        - **y**: Labels corresponding to the EEG data.
-        - **sfreq**: Sampling frequency of the EEG data.
-        - **y_dict**: Mapping of labels to integers.
-        - **events**: Dictionary describing event markers.
-        - **ch_names**: List of channel names.
-        - **tmin**: Start time of the EEG data.
+        X: EEG data as a numpy array.
+        y: Labels corresponding to the EEG data.
+        sfreq: Sampling frequency of the EEG data.
+        y_dict: Mapping of labels to integers.
+        events: Dictionary describing event markers.
+        ch_names: List of channel names.
+        tmin: Start time of the EEG data.
 
     Raises
     ------

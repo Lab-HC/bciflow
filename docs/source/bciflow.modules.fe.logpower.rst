@@ -1,6 +1,7 @@
-bciflow.modules.fe.logpower module
-==================================
-
+.. _logpower:
+============
+Log Power
+============
 .. automodule:: bciflow.modules.fe.logpower
    :members:
    :show-inheritance:

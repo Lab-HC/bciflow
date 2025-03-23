@@ -1,53 +1,18 @@
-bciflow.modules.fe package
-==========================
+.. _fe:
+=================
+Feature Extraction
+=================
+Feature extraction is a crucial step in BCI pipelines, where meaningful 
+information is derived from raw EEG signals. This process transforms 
+high-dimensional data into a lower-dimensional representation, capturing 
+essential patterns for classification or analysis.
 
-Submodules
-----------
+.. toctree::
+   :maxdepth: 1
+   :caption: Classes
 
-bciflow.modules.fe.apsd module
-------------------------------
-
-.. automodule:: bciflow.modules.fe.apsd
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.fe.curvelength module
--------------------------------------
-
-.. automodule:: bciflow.modules.fe.curvelength
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.fe.logpower module
-----------------------------------
-
-.. automodule:: bciflow.modules.fe.logpower
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.fe.nonlinearenergy module
------------------------------------------
-
-.. automodule:: bciflow.modules.fe.nonlinearenergy
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.fe.welch\_period module
----------------------------------------
-
-.. automodule:: bciflow.modules.fe.welch_period
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: bciflow.modules.fe
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   bciflow.modules.fe.apsd
+   bciflow.modules.fe.curvelength
+   bciflow.modules.fe.logpower
+   bciflow.modules.fe.nonlinearenergy
+   bciflow.modules.fe.welch_period

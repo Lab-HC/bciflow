@@ -1,6 +1,7 @@
-bciflow.modules.fe.curvelength module
-=====================================
-
+.. _curvelength:
+============
+Curve Length
+============
 .. automodule:: bciflow.modules.fe.curvelength
    :members:
    :show-inheritance:

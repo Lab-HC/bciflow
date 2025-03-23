@@ -1,61 +1,16 @@
-bciflow.modules.tf package
-==========================
-
-Subpackages
------------
+.. _tf:
+=================
+Temporal Filtering
+=================
+Methods to preprocess EEG signals, such as bandpass filters, resampling, and wavelet transforms.
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
+   :caption: Functions
 
    bciflow.modules.tf.bandpass
-
-Submodules
-----------
-
-bciflow.modules.tf.emd\_sift module
------------------------------------
-
-.. automodule:: bciflow.modules.tf.emd_sift
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.tf.filterbank module
-------------------------------------
-
-.. automodule:: bciflow.modules.tf.filterbank
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.tf.resample\_cubic module
------------------------------------------
-
-.. automodule:: bciflow.modules.tf.resample_cubic
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.tf.resample\_fft module
----------------------------------------
-
-.. automodule:: bciflow.modules.tf.resample_fft
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.tf.wavelet module
----------------------------------
-
-.. automodule:: bciflow.modules.tf.wavelet
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: bciflow.modules.tf
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   bciflow.modules.tf.emd_sift
+   bciflow.modules.tf.filterbank
+   bciflow.modules.tf.resample_cubic
+   bciflow.modules.tf.resample_fft
+   bciflow.modules.tf.wavelet

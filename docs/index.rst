@@ -1,27 +1,41 @@
 BCIFLOW documentation
 =====================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Bciflow is a Python package focused on `Brain-Computer Interface (BCI)`_-related work. 
+It provides tools for loading pre-established datasets, performing analysis, 
+pre-processing, filtering, feature extraction, and classification, 
+covering the entire process of creating BCI models. 
 
-   source/bciflow.datasets
-   source/bciflow.modules
-
+.. _Brain-Computer Interface (BCI): https://en.wikipedia.org/wiki/Brain%E2%80%93computer_interface
 
 .. toctree::
    :maxdepth: 1
    :caption: Project Links
-   :hidden:
 
    PyPI <https://pypi.org/project/bciflow/1.0.0.dev1/>
    GitHub <https://github.com/Lab-HC/bciflow>
    Issues <https://github.com/Lab-HC/bciflow/issues>
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Package
+
+   source/installation
+   source/bciflow.datasets
+   source/bciflow.modules
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Usage
+
+   source/data_files
+   source/examples
+
+.. toctree
    :maxdepth: 2
    :caption: Additional Links
    :hidden:
-   
+
    Sphinx Documentation <https://www.sphinx-doc.org/en/master/>
    RTD Theme Documentation <https://sphinx-rtd-theme.readthedocs.io/>
+..

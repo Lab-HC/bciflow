@@ -1,6 +1,7 @@
-bciflow.modules.core.util module
-================================
-
+.. _util:
+=====
+Util
+=====
 .. automodule:: bciflow.modules.core.util
    :members:
    :show-inheritance:

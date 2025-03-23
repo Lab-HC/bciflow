@@ -1,7 +1,33 @@
+'''
+Description
+-----------
+This module implements the Common Spatial Patterns (CSP) filter, 
+a spatial filtering technique used to enhance the discriminability 
+of EEG signals for binary classification tasks.
+
+The CSP filter maximizes the variance of one class while 
+minimizing the variance of another, making it ideal for tasks like motor imagery classification. The implementation uses 
+eigenvalue decomposition to compute the spatial filters.
+
+Class
+------------
+'''
 import numpy as np
 import scipy as sp
 
 class csp:
+    '''
+    Attributes
+    ----------
+    n_electrodes : 
+        (int) The number of electrodes.
+    m_pairs : 
+        (int) The number of pairs of spatial filters to extract (default is 2).
+    W : 
+        (np.ndarray) The spatial filters.
+    bands : 
+        (int) The number of bands used.
+    '''
     def __init__(self, m_pairs: int = 2):
         if type(m_pairs) != int or m_pairs <= 0:
             raise ValueError("Must be a positive integer")
@@ -9,6 +35,18 @@ class csp:
             self.m_pairs = m_pairs
 
     def fit(self, eegdata: dict) -> np.ndarray:
+        ''' Fits the CSP filter to the input data, calculating the spatial filters.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data.
+        
+        returns
+        -------
+        self
+            
+        '''
         X = None
         y = None
         if type(eegdata['X']) != np.ndarray:
@@ -65,6 +103,20 @@ class csp:
         return self
 
     def transform(self, eegdata: dict) -> dict:
+        ''' 
+        Applies the learned spatial filters to the input data.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data.
+            
+        returns
+        -------
+        output : dict
+            The transformed data.
+            
+        '''
         X = None
         y = None
         if type(eegdata['X']) != np.ndarray:
@@ -88,6 +140,20 @@ class csp:
         #X_ = [np.transpose(self.W) @ X_[i] for i in range(len(X_))]
 
     def fit_transform(self, eegdata: dict) -> dict:
+        ''' 
+        Combines fitting and transforming into a single step.
+
+        Parameters
+        ----------
+        eegdata : dict
+            The input data.
+        
+        returns
+        -------
+        output : dict
+            The transformed data.
+            
+        '''
         X = None
         y = None
         if type(eegdata['X']) != np.ndarray:

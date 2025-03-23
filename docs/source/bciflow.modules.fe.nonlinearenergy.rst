@@ -1,6 +1,7 @@
-bciflow.modules.fe.nonlinearenergy module
-=========================================
-
+.. _nonlinearenergy:
+============
+Nonlinear Energy
+============
 .. automodule:: bciflow.modules.fe.nonlinearenergy
    :members:
    :show-inheritance:

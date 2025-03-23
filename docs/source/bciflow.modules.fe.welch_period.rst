@@ -1,6 +1,7 @@
-bciflow.modules.fe.welch\_period module
-=======================================
-
+.. _welch_period:
+============
+Welch Periodogram
+============
 .. automodule:: bciflow.modules.fe.welch_period
    :members:
    :show-inheritance:

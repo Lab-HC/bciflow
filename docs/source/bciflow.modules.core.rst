@@ -1,29 +1,14 @@
-bciflow.modules.core package
-============================
+.. _core:
+=================
+Core
+=================
+This section is reserved to the methods outside the main BCI-pipeline.
+Most of the methods here are used as helper functions to the main methods, 
+or to validate the results obtained.
 
-Submodules
-----------
+.. toctree::
+   :maxdepth: 1
+   :caption: Methods
 
-bciflow.modules.core.kfold module
----------------------------------
-
-.. automodule:: bciflow.modules.core.kfold
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-bciflow.modules.core.util module
---------------------------------
-
-.. automodule:: bciflow.modules.core.util
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: bciflow.modules.core
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   bciflow.modules.core.kfold
+   bciflow.modules.core.util

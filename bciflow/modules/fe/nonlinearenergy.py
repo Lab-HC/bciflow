@@ -1,18 +1,75 @@
+'''
+Description
+-----------
+This module implements the Nonlinear Energy feature extractor, which estimates the energy 
+of EEG signals using a nonlinear transformation. This feature is useful for capturing 
+nonlinear dynamics and transient events in brain activity, making it suitable for tasks 
+like seizure detection or event-related potential (ERP) analysis.
+
+The Nonlinear Energy is calculated as the sum of the squared amplitude of the signal 
+minus the product of adjacent samples.
+
+Class
+------------
+'''
 import numpy as np
 
 class nonlinearenergy():
+    '''
+    Attributes
+    ----------
+    flating : bool
+        If True, the output data is returned in a flattened format (default is False).
+    '''
     def __init__(self, flating: bool = False): 
+        ''' Initializes the class.
+        
+        Parameters
+        ----------
+        flating : bool, optional
+            If True, the output data is returned in a flattened format (default is False).
+        
+        Returns
+        -------
+        None
+        '''
         if type(flating) != bool:
             raise ValueError ("Has to be a boolean type value")
         else:
             self.flating = flating
 
     def fit(self, eegdata):
+        '''
+        This method does nothing, as the Nonlinear Energy feature extractor does not require training.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data.
+            
+        Returns
+        -------
+        self
+        '''
         if type(eegdata) != dict:
             raise ValueError ("Has to be a dict type")         
         return self
 
     def transform(self, eegdata) -> dict:
+        '''
+        This method computes the Nonlinear Energy for each trial, band, and channel in the input data. 
+        The result is stored in the dictionary under the key 'X'.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data.
+        
+        Returns
+        -------
+        output : dict
+            The transformed data.
+        '''
         if type(eegdata) != dict:
             raise ValueError ("Has to be a dict type")                
         X = eegdata['X'].copy()
@@ -43,4 +100,18 @@ class nonlinearenergy():
         return eegdata
     
     def fit_transform(self, eegdata) -> dict:
+        '''
+        This method combines fitting and transforming into a single step. It returns a 
+        dictionary with the transformed data.
+        
+        Parameters
+        ----------
+        eegdata : dict
+            The input data.
+          
+        Returns
+        -------
+        output : dict
+            The transformed data.
+        '''
         return self.fit(eegdata).transform(eegdata)

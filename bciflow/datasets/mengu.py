@@ -4,10 +4,6 @@ Description
 This code is used to load EEG data from the MenGu dataset. 
 It modifies the data to fit the requirements of the eegdata dictionary, which is used to store and process EEG data.
 
-Dependencies
-------------
-- numpy
-- h5py 
 '''
 
 import numpy as np
@@ -41,18 +37,17 @@ def mengu(subject: int=1,
         path to the foldar that contains all dataset files.
 
 
-    Returns:
+    Returns
     ----------
-    dict
         A dictionary containing the following keys:
 
-        - **X**: EEG data as a numpy array.
-        - **y**: Labels corresponding to the EEG data.
-        - **sfreq**: Sampling frequency of the EEG data.
-        - **y_dict**: Mapping of labels to integers.
-        - **events**: Dictionary describing event markers.
-        - **ch_names**: List of channel names.
-        - **tmin**: Start time of the EEG data.
+        X: EEG data as a numpy array.
+        y: Labels corresponding to the EEG data.
+        sfreq: Sampling frequency of the EEG data.
+        y_dict: Mapping of labels to integers.
+        events: Dictionary describing event markers.
+        ch_names: List of channel names.
+        tmin: Start time of the EEG data.
 
     Raises
     ------
@@ -63,7 +58,7 @@ def mengu(subject: int=1,
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
-    >>> eeg_data = cbcic(subject=1)
+    >>> eeg_data = mengu(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     """
