@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bciflow"
-version = "1.0.0.dev1"
+version = "1.0.0.dev2"
 authors = [
-  { name="Gabriel de Souza", email="ghdesouza@gmail.com" },
-  { name="Hiero Henrique", email="hierohenrique@gmail.com" },
-  { name="Marcelo M. Amorim", email="marcelodmeloamorim@gmail.com" },
+  { name="Gabriel Henrique de Souza", email="gabriel.souza@ufjf.br" },
+  { name="Hiero Henrique Barcelos Costa", email="hiero.costa@estudante.ufjf.br" },
+  { name="Marcelo de Melo Amorim Filho", email="marcelomelo.amorim@estudante.ufjf.br" },
 ]
 description = "A package for BCI-related tasks, including dataset loading, preprocessing, feature extraction, and classification."
 readme = "README.md"
@@ -16,8 +16,12 @@ requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Development Status :: 3 - Alpha",  
+    "Intended Audience :: Customer Service",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Healthcare Industry",
     "Intended Audience :: Science/Research",
-    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Intended Audience :: Telecommunications Industry",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",  # Adicione o classificador de licença
 ]
 license-files = ["LICENSES/*"]
@@ -34,5 +38,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ghdesouza/bciflow"
-Issues = "https://github.com/ghdesouza/bciflow/issues"
+Homepage = "https://github.com/Lab-HC/bciflow"
+Issues = "https://github.com/Lab-HC/bciflow/issues"

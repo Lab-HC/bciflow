@@ -1,3 +1,15 @@
+'''
+Description
+-----------
+This code is used to load EEG data from the MenGu dataset. 
+It modifies the data to fit the requirements of the eegdata dictionary, which is used to store and process EEG data.
+
+Dependencies
+------------
+- numpy
+- h5py 
+'''
+
 import numpy as np
 import h5py
 
@@ -7,6 +19,55 @@ def mengu(subject: int=1,
           depth: list=None,
           path='data/mengu/'):
     
+    """
+    Load EEG data from the MenGu dataset. 
+    It modifies the data to fit the requirements of the eegdata dictionary, 
+    which is used to store and process EEG data. 
+
+    Parameters
+    ----------
+    subject : int
+        index of the subject to retrieve the data from.
+    session_list : list, optional
+        list of session codes. 
+        default state is None, which results on the collection of all session. 
+    labels : list
+        list of labels used in the dataset.
+        default state is None, which results on all labels being used.
+    depth : list
+        list of depths used.
+        default state is None, which results on all depths being used.
+    path : str
+        path to the foldar that contains all dataset files.
+
+
+    Returns:
+    ----------
+    dict
+        A dictionary containing the following keys:
+
+        - **X**: EEG data as a numpy array.
+        - **y**: Labels corresponding to the EEG data.
+        - **sfreq**: Sampling frequency of the EEG data.
+        - **y_dict**: Mapping of labels to integers.
+        - **events**: Dictionary describing event markers.
+        - **ch_names**: List of channel names.
+        - **tmin**: Start time of the EEG data.
+
+    Raises
+    ------
+    ValueError
+        If any of the input parameters are invalid or if the specified file does not exist.
+
+    Examples
+    --------
+    Load EEG data for subject 1, all sessions, and default labels:
+
+    >>> eeg_data = cbcic(subject=1)
+    >>> print(eeg_data['X'].shape)  # Shape of the EEG data
+    >>> print(eeg_data['y'])  # Labels
+    """
+        
     # Check if the subject input is valid
     if type(subject) != int:
         raise ValueError("subject has to be a int type value")
