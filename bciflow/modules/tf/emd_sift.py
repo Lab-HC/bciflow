@@ -22,6 +22,7 @@ def EMD(eegdata, n_imfs=5):
 
     Returns
     -------
+    dict
         The same dictionary passed in parameters, but with the transformed data stored under the key 'X'. The shape of the transformed data is (n_trials, n_imfs, n_electrodes, n_samples).
 
 

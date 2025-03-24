@@ -1,4 +1,4 @@
-BCIFLOW documentation
+Bciflow documentation
 =====================
 
 Bciflow is a Python package focused on `Brain-Computer Interface (BCI)`_-related work. 
@@ -12,12 +12,12 @@ covering the entire process of creating BCI models.
    :maxdepth: 1
    :caption: Project Links
 
-   PyPI <https://pypi.org/project/bciflow/1.0.0.dev1/>
+   PyPI <https://pypi.org/project/bciflow/>
    GitHub <https://github.com/Lab-HC/bciflow>
    Issues <https://github.com/Lab-HC/bciflow/issues>
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :caption: Package
 
    source/installation

@@ -36,6 +36,7 @@ class ea:
         
         returns
         -------
+        np.ndarray
             The reference matrix for the input data
             
         '''
@@ -60,6 +61,7 @@ class ea:
         
         returns
         -------
+        np.ndarray
             The reference matrix for the input data
             
         '''

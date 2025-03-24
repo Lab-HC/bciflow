@@ -34,6 +34,7 @@ def cbcic(subject: int = 1,
 
     Returns
     -------
+    dict
         A dictionary containing the following keys:
 
         X: EEG data as a numpy array.

@@ -24,6 +24,7 @@ def fft_resample(eegdata, new_sfreq):
 
     Returns
     -------
+    dict
         The same dictionary passed in parameters, but with the resampled data stored under the key 'X' and the new sampling frequency under the key 'sfreq'.
     '''
     X = eegdata['X'].copy()

@@ -22,6 +22,7 @@ def wavelet(eegdata, levels=5):
 
     Returns
     -------
+    dict
         The same dictionary passed in parameters, but with the transformed data stored under the key 'X'.
     '''
     X = eegdata['X'].copy()
