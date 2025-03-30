@@ -11,8 +11,9 @@ import numpy as np
 import pandas as pd
 import inspect
 from ..core.util import util
+from ..sf.ea import ea
 
-def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_folding={}, pos_folding={}):
+def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_folding={}, pos_folding={}, source = None):
     '''
     This method is used to perform a stratified k-fold cross-validation. 
     The method is designed to work with eegdata dictionary.
@@ -33,6 +34,8 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
         The keys are the names of the postprocessing functions, and the values are the functions.
     window_size : float 
             The size of the window to be used in the crop method of eegdata.
+    source : list
+        List of Eeg data from anothers subjects to be used as a source for the Transfer Learning modules
     Returns
     -------
     results : pandas.DataFrame
@@ -45,6 +48,30 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
 
     if start_test_window is None:
         start_test_window = start_window
+
+    if source is not None:
+        tl = ea()
+        dicts_to_process = [target]
+        dicts_to_process.extend(source)
+        for d in dicts_to_process[1:]:
+            if d.keys() != target.keys():
+                raise ValueError("All dictionaries must have identical keys")
+            for k in ['sfreq', 'y_dict', 'ch_names', 'tmin']:
+                if isinstance(target[k], np.ndarray):
+                    if not np.array_equal(target[k], d[k]):
+                        raise ValueError(f"Parameter {k} does not match between dictionaries")
+                else:
+                    if target[k] != d[k]:
+                        raise ValueError(f"Parameter {k} does not match between dictionaries")
+        processed_dicts = []
+        for d in dicts_to_process:
+            processed = d.copy()
+            processed = tl.fit_transform(d)  # Apply your 'ea' method
+            processed_dicts.append(processed)
+        combined = target.copy()
+        combined['X'] = np.concatenate([d['X'] for d in processed_dicts], axis=0)
+        combined['y'] = np.concatenate([d['y'] for d in processed_dicts], axis=0)
+        target = combined
 
     target_dict = {}
     for tmin_ in start_test_window:

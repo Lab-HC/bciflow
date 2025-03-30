@@ -120,13 +120,13 @@
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : np.ndarry</span>
-<span class="sd">            The input data.</span>
+<span class="sd">        data : array-like, shape (n_trials, n_bands, n_electodes, n_times)</span>
+<span class="sd">            The input data from a subject.</span>
 <span class="sd">        </span>
 <span class="sd">        returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            The reference matrix for the input data</span>
+<span class="sd">        list_r : list-like, size (n_bands), containing array-like, shape (n_electodes, n_electodes)</span>
+<span class="sd">            The list of reference matrix from the data.</span>
 <span class="sd">            </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">list_r</span> <span class="o">=</span> <span class="p">[]</span>
@@ -144,17 +144,18 @@
 <a class="viewcode-back" href="../../../../source/bciflow.modules.sf.ea.html#bciflow.modules.sf.ea.ea.full_r">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">full_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
-<span class="sd">        Computes the transformation matrix by raising the reference matrix to the power of -1/2.</span>
+<span class="sd">        This method call calc_r, and then raises all matrices to the power of -1/2,</span>
+<span class="sd">        to transform the input data</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : np.ndarry</span>
-<span class="sd">            The input data.</span>
-<span class="sd">        </span>
-<span class="sd">        returns</span>
+<span class="sd">        data : array-like, shape (n_trials, n_bands, n_electodes, n_times)</span>
+<span class="sd">            The input data from a subject.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            The reference matrix for the input data</span>
+<span class="sd">        list_r_inv : list-like, size (n_bands), containing array-like, shape (n_electodes, n_electodes)</span>
+<span class="sd">            The list of reference matrix to the power of -1/2 from the data.</span>
 <span class="sd">            </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">list_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_r</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -162,6 +163,35 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">list_r_inv</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="ea.verify_r">
+<a class="viewcode-back" href="../../../../source/bciflow.modules.sf.ea.html#bciflow.modules.sf.ea.ea.verify_r">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verify_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        To check whether the Euclidean alignment was implemented correctly, </span>
+<span class="sd">        it is necessary to check whether the data reference matrices after </span>
+<span class="sd">        the transformation are equal to the identity matrix. Due to computational errors, </span>
+<span class="sd">        all values less than epsilon are considered as 0</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        matrix : array-like, shape (n_electodes, n_electodes)</span>
+<span class="sd">            A reference matrix.</span>
+<span class="sd">        epsilon : float</span>
+<span class="sd">            Number used as parameter to determine whether the matrix and identity</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test : bool</span>
+<span class="sd">            Validation of the matrix being identity or not</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="n">matrix</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A entrada deve ser uma matriz quadrada (2D).&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">matrix</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">epsilon</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">matrix</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">matrix</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">)</span></div>
+
+    
 <div class="viewcode-block" id="ea.fit">
 <a class="viewcode-back" href="../../../../source/bciflow.modules.sf.ea.html#bciflow.modules.sf.ea.ea.fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eegdata</span><span class="p">):</span>
@@ -187,7 +217,8 @@
 <a class="viewcode-back" href="../../../../source/bciflow.modules.sf.ea.html#bciflow.modules.sf.ea.ea.transform">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eegdata</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
-<span class="sd">        Applies the learned transformation matrices to align the input data.</span>
+<span class="sd">        This method aligns the target subject&#39;s data by multiplying it</span>
+<span class="sd">        by the reference matrix for each band.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -197,8 +228,7 @@
 <span class="sd">        returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        output : dict</span>
-<span class="sd">            The transformed data.</span>
-<span class="sd">            </span>
+<span class="sd">            The transformed data. </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">eegdata</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 

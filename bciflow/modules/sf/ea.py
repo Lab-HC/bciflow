@@ -31,13 +31,13 @@ class ea:
         
         Parameters
         ----------
-        data : np.ndarry
-            The input data.
+        data : array-like, shape (n_trials, n_bands, n_electodes, n_times)
+            The input data from a subject.
         
         returns
         -------
-        np.ndarray
-            The reference matrix for the input data
+        list_r : list-like, size (n_bands), containing array-like, shape (n_electodes, n_electodes)
+            The list of reference matrix from the data.
             
         '''
         list_r = []
@@ -52,23 +52,50 @@ class ea:
     
     def full_r(self, data):
         ''' 
-        Computes the transformation matrix by raising the reference matrix to the power of -1/2.
+        This method call calc_r, and then raises all matrices to the power of -1/2,
+        to transform the input data
         
         Parameters
         ----------
-        data : np.ndarry
-            The input data.
-        
-        returns
+        data : array-like, shape (n_trials, n_bands, n_electodes, n_times)
+            The input data from a subject.
+            
+        Returns
         -------
-        np.ndarray
-            The reference matrix for the input data
+        list_r_inv : list-like, size (n_bands), containing array-like, shape (n_electodes, n_electodes)
+            The list of reference matrix to the power of -1/2 from the data.
             
         '''
         list_r = self.calc_r(data)
         list_r_inv = [fractional_matrix_power(r, -0.5) for r in list_r]
         return np.array(list_r_inv)
 
+    def verify_r(self, matrix, epsilon=1e-10):
+        '''
+        To check whether the Euclidean alignment was implemented correctly, 
+        it is necessary to check whether the data reference matrices after 
+        the transformation are equal to the identity matrix. Due to computational errors, 
+        all values less than epsilon are considered as 0
+        
+        Parameters
+        ----------
+        matrix : array-like, shape (n_electodes, n_electodes)
+            A reference matrix.
+        epsilon : float
+            Number used as parameter to determine whether the matrix and identity
+            
+        Returns
+        -------
+        test : bool
+            Validation of the matrix being identity or not
+        
+        '''
+        if not isinstance(matrix, np.ndarray) or matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
+            raise ValueError("A entrada deve ser uma matriz quadrada (2D).")
+        if not np.allclose(np.diag(matrix), 1, atol=epsilon):
+            return False
+        return np.all(np.abs(matrix - np.diag(np.diag(matrix))) < epsilon)
+    
     def fit(self, eegdata):
         ''' 
         Fits the EA method to the input data, calculating the transformation matrices.
@@ -89,7 +116,8 @@ class ea:
 
     def transform(self, eegdata):
         ''' 
-        Applies the learned transformation matrices to align the input data.
+        This method aligns the target subject's data by multiplying it
+        by the reference matrix for each band.
         
         Parameters
         ----------
@@ -99,8 +127,7 @@ class ea:
         returns
         -------
         output : dict
-            The transformed data.
-            
+            The transformed data. 
         '''
         X = eegdata['X'].copy()
 

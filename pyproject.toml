@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bciflow"
-version = "1.0.0.dev2"
+version = "1.0.0.dev3"
 authors = [
   { name="Gabriel Henrique de Souza", email="gabriel.souza@ufjf.br" },
   { name="Hiero Henrique Barcelos Costa", email="hiero.costa@estudante.ufjf.br" },
@@ -40,3 +40,4 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/Lab-HC/bciflow"
 Issues = "https://github.com/Lab-HC/bciflow/issues"
+Documentation = "https://lab-hc.github.io/bciflow/"

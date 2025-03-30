@@ -69,6 +69,7 @@
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.fs.html">Feature Selection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.clf.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bciflow.modules.analysis.html">Analysis</a></li>
 </ul>
 </li>
 </ul>
@@ -139,13 +140,13 @@ BCI applications.</p>
 <dd><p>Computes the reference matrix for each frequency band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>np.ndarry</em>) – The input data.</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_trials</em><em>, </em><em>n_bands</em><em>, </em><em>n_electodes</em><em>, </em><em>n_times</em><em>)</em>) – The input data from a subject.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The reference matrix for the input data</p>
+<dd class="field-even"><p><strong>list_r</strong> – The list of reference matrix from the data.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p>list-like, size (n_bands), containing array-like, shape (n_electodes, n_electodes)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -184,16 +185,17 @@ BCI applications.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="bciflow.modules.sf.ea.ea.full_r">
 <span class="sig-name descname"><span class="pre">full_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/sf/ea.html#ea.full_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.sf.ea.ea.full_r" title="Link to this definition"></a></dt>
-<dd><p>Computes the transformation matrix by raising the reference matrix to the power of -1/2.</p>
+<dd><p>This method call calc_r, and then raises all matrices to the power of -1/2,
+to transform the input data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>np.ndarry</em>) – The input data.</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_trials</em><em>, </em><em>n_bands</em><em>, </em><em>n_electodes</em><em>, </em><em>n_times</em><em>)</em>) – The input data from a subject.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The reference matrix for the input data</p>
+<dd class="field-even"><p><strong>list_r_inv</strong> – The list of reference matrix to the power of -1/2 from the data.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p>list-like, size (n_bands), containing array-like, shape (n_electodes, n_electodes)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -201,7 +203,8 @@ BCI applications.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="bciflow.modules.sf.ea.ea.transform">
 <span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eegdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/sf/ea.html#ea.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.sf.ea.ea.transform" title="Link to this definition"></a></dt>
-<dd><p>Applies the learned transformation matrices to align the input data.</p>
+<dd><p>This method aligns the target subject’s data by multiplying it
+by the reference matrix for each band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>eegdata</strong> (<em>dict</em>) – The input data.</p>
@@ -211,6 +214,29 @@ BCI applications.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bciflow.modules.sf.ea.ea.verify_r">
+<span class="sig-name descname"><span class="pre">verify_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/sf/ea.html#ea.verify_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.sf.ea.ea.verify_r" title="Link to this definition"></a></dt>
+<dd><p>To check whether the Euclidean alignment was implemented correctly,
+it is necessary to check whether the data reference matrices after
+the transformation are equal to the identity matrix. Due to computational errors,
+all values less than epsilon are considered as 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_electodes</em><em>, </em><em>n_electodes</em><em>)</em>) – A reference matrix.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – Number used as parameter to determine whether the matrix and identity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>test</strong> – Validation of the matrix being identity or not</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>

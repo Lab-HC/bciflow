@@ -18,5 +18,6 @@ allowing researchers to easily assemble and customize their workflows.
    bciflow.modules.fs
    bciflow.modules.clf
    bciflow.modules.core
+   bciflow.modules.analysis
 
 
