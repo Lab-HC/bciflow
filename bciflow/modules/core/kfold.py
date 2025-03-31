@@ -13,7 +13,23 @@ import inspect
 from ..core.util import util
 from ..sf.ea import ea
 
-def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_folding={}, pos_folding={}, source = None):
+def windowing(target, start_test_window, window_size = 2):
+    target_dict = {}
+    for tmin_ in start_test_window:
+        target_dict[tmin_] = util.crop(data=target, tmin=tmin_, window_size=window_size, inplace=False)
+    return target_dict
+
+def apply_pre_folding(target_dict, start_test_window, pre_folding):
+    for tmin_ in start_test_window:
+        for name, pre_func in pre_folding.items():
+
+            if inspect.isfunction(pre_func[0]):
+                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0], func_param=pre_func[1], inplace=False)
+            else:
+                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0].transform, func_param=pre_func[1], inplace=False)
+    return target_dict
+
+def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_folding={}, pos_folding={}):
     '''
     This method is used to perform a stratified k-fold cross-validation. 
     The method is designed to work with eegdata dictionary.
@@ -49,42 +65,9 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
     if start_test_window is None:
         start_test_window = start_window
 
-    if source is not None:
-        tl = ea()
-        dicts_to_process = [target]
-        dicts_to_process.extend(source)
-        for d in dicts_to_process[1:]:
-            if d.keys() != target.keys():
-                raise ValueError("All dictionaries must have identical keys")
-            for k in ['sfreq', 'y_dict', 'ch_names', 'tmin']:
-                if isinstance(target[k], np.ndarray):
-                    if not np.array_equal(target[k], d[k]):
-                        raise ValueError(f"Parameter {k} does not match between dictionaries")
-                else:
-                    if target[k] != d[k]:
-                        raise ValueError(f"Parameter {k} does not match between dictionaries")
-        processed_dicts = []
-        for d in dicts_to_process:
-            processed = d.copy()
-            processed = tl.fit_transform(d)  # Apply your 'ea' method
-            processed_dicts.append(processed)
-        combined = target.copy()
-        combined['X'] = np.concatenate([d['X'] for d in processed_dicts], axis=0)
-        combined['y'] = np.concatenate([d['y'] for d in processed_dicts], axis=0)
-        target = combined
-
-    target_dict = {}
-    for tmin_ in start_test_window:
-        target_dict[tmin_] = util.crop(data=target, tmin=tmin_, window_size=window_size, inplace=False)
-        
-    for tmin_ in start_test_window:
-        for name, pre_func in pre_folding.items():
-
-            if inspect.isfunction(pre_func[0]):
-                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0], func_param=pre_func[1], inplace=False)
-            else:
-                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0].transform, func_param=pre_func[1], inplace=False)
-
+    target_dict = windowing(target, start_test_window, window_size)
+    target_dict = apply_pre_folding(target_dict, start_test_window, pre_folding)
+    
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     fold_id = 0
     results = []
