@@ -16,12 +16,12 @@ d3 = cbcic(subject = 3)
 
 
 pre_folding = {'tf': (chebyshevII, {})}
-pos_folding = {'tl': (ea(), {'source': [d1]}),
+pos_folding = {'tl': (ea(), {}),
                'fe': (logpower, {'flating': True}),
                'clf': (lda(), {})}
 start_window=d1['events']['cue'][0]+0.5
 
-results = kfold(target=d1, 
+results = kfold(target=d2, 
                 start_window=start_window, 
                 pre_folding=pre_folding, 
                 pos_folding=pos_folding)
