@@ -13,22 +13,6 @@ import inspect
 from ..core.util import util
 from ..sf.ea import ea
 
-def windowing(target, start_test_window, window_size = 2):
-    target_dict = {}
-    for tmin_ in start_test_window:
-        target_dict[tmin_] = util.crop(data=target, tmin=tmin_, window_size=window_size, inplace=False)
-    return target_dict
-
-def apply_pre_folding(target_dict, start_test_window, pre_folding):
-    for tmin_ in start_test_window:
-        for name, pre_func in pre_folding.items():
-
-            if inspect.isfunction(pre_func[0]):
-                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0], func_param=pre_func[1], inplace=False)
-            else:
-                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0].transform, func_param=pre_func[1], inplace=False)
-    return target_dict
-
 def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_folding={}, pos_folding={}):
     '''
     This method is used to perform a stratified k-fold cross-validation. 
@@ -65,8 +49,17 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
     if start_test_window is None:
         start_test_window = start_window
 
-    target_dict = windowing(target, start_test_window, window_size)
-    target_dict = apply_pre_folding(target_dict, start_test_window, pre_folding)
+    target_dict = {}
+    for tmin_ in start_test_window:
+        target_dict[tmin_] = util.crop(data=target, tmin=tmin_, window_size=window_size, inplace=False)
+    
+    for tmin_ in start_test_window:
+        for name, pre_func in pre_folding.items():
+
+            if inspect.isfunction(pre_func[0]):
+                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0], func_param=pre_func[1], inplace=False)
+            else:
+                target_dict[tmin_] = util.apply_to_trials(data=target_dict[tmin_], func=pre_func[0].transform, func_param=pre_func[1], inplace=False)
     
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     fold_id = 0
@@ -76,12 +69,12 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
 
         target_train = []
         for tmin_ in start_window:
-            target_train.append(util.get_trial(data=target, ids=train_index))
+            target_train.append(util.get_trial(data=target_dict, ids=train_index))
         target_train = util.concatenate(target_train)
 
         target_test = {}
         for tmin_ in start_test_window:
-            target_test[tmin_] = util.get_trial(data=target, ids=test_index)
+            target_test[tmin_] = util.get_trial(data=target_dict, ids=test_index)
 
         for name, pos_func in pos_folding.items():
             
