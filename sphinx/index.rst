@@ -37,6 +37,8 @@ covering the entire process of creating BCI models.
 
    source/exploring_cbcic
    source/data_processing
+   source/customCompsKfold
+   source/ownDataset
 
 .. toctree
    :maxdepth: 2
