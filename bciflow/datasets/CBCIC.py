@@ -6,7 +6,7 @@ def cbcic(subject: int = 1,
           session_list: Optional[List[str]] = None,
           labels: List[str] = ['left-hand', 'right-hand'],
           path: str = 'data/cbcic/') -> Dict[str, Any]:
-    """
+    '''
     This function loads EEG data for a specific subject and session from the cbcic dataset.
     It processes the data to fit the structure of the `eegdata` dictionary, which is used
     for further processing and analysis.
@@ -54,7 +54,7 @@ def cbcic(subject: int = 1,
     >>> eeg_data = cbcic(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
-    """
+    '''
 
     # Check if the subject input is valid
     if type(subject) != int:

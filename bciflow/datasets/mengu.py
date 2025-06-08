@@ -7,7 +7,7 @@ def mengu(subject: int = 1,
           labels: Optional[List[str]] = None,
           depth: Optional[List[str]] = None,
           path='data/mengu/'):
-    """
+    '''
     Load EEG data from the MenGu dataset. 
     It modifies the data to fit the requirements of the eegdata dictionary, 
     which is used to store and process EEG data. 
@@ -58,7 +58,7 @@ def mengu(subject: int = 1,
     >>> eeg_data = mengu(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
-    """
+    '''
         
     # Check if the subject input is valid
     if type(subject) != int:

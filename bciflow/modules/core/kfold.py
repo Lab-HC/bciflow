@@ -19,11 +19,19 @@ def kfold(target: Dict[str, Any],
     Parameters
     ----------
     target : dict
-        Input EEG data.
+        Input EEG data in the form of a dictionary.
+        The dictionary should contain the following keys:
+        - 'X': The EEG data as a numpy array.
+        - 'y': The labels corresponding to the EEG data.
+        - 'sfreq': The sampling frequency of the EEG data.
+        - 'y_dict': A dictionary mapping the labels to integers.
+        - 'events': A dictionary describing the event markers.
+        - 'ch_names': A list of channel names.
+        - 'tmin': The start time of the EEG data.        
     start_window : int
-
+        The start time of the window to be used in the crop method of eegdata for the training set.
     start_test_window : int
-
+        The start time of the window to be used in the crop method of eegdata for the test set.
     pre_folding : dict
         A dictionary containing the preprocessing functions to be applied to the data before the cross-validation.
         The keys are the names of the preprocessing functions, and the values are tuples containing the function and its parameters.
@@ -35,13 +43,39 @@ def kfold(target: Dict[str, Any],
             The size of the window to be used in the crop method of eegdata.
     source : list
         List of Eeg data from anothers subjects to be used as a source for the Transfer Learning modules
+    
     Returns
     -------
     results : pandas.DataFrame
         A pandas dataframe containing the results of the cross-validation. 
         The columns are 'fold', 'tmin', 'true_label', and the labels of the events in the target object.
 
+    Raises
+    ------
+    ValueError
+        If any of the input parameters are invalid
+
+    Example
+    -------
+    Applying k-fold cross-validation on EEG data:
+
+    >>> from bciflow.modules.core.kfold import kfold
+    >>> import numpy as np
+    >>> target = {
+        'X': np.random.rand(100, 64, 256),
+        'y': np.random.randint(0, 2, size=100),
+        'sfreq': 256,  # Sampling frequency
+        'y_dict': {0: 'class_0', 1: 'class_1'},
+        'events': {'event_1': [0, 50], 'event_2': [51, 100]},
+        'ch_names': [f'ch_{i}' for i in range(64)],
+        'tmin': -0.5
+    }
+    >>> start_window = 0.0
+    >>> start_test_window = 0.5
+    >>> results = kfold(target, start_window, start_test_window)
+    >>> print(results.head())  # Display the first few rows of the results
     '''
+    
     if type(start_window) is float:
         start_window = [start_window]
 
