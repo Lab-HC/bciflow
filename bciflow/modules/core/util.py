@@ -195,3 +195,26 @@ class util():
             data["y"] = np.concatenate([data["y"], data_["y"]])
 
         return data
+
+        
+    def find_key_with_value(dictionary, i):
+        '''
+        This function returns the key of a dictionary given a value.
+        
+        Parameters
+        ----------
+        dictionary : dict
+            The dictionary to be searched.
+        i : any
+            The value to be searched for.
+
+        Returns
+        -------
+        key : any
+            The key of the dictionary that contains the value i. If the value is not found, returns None.
+
+        '''
+        for key, value in dictionary.items():
+            if value == i:
+                return key
+        return None

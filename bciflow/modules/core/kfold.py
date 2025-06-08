@@ -1,19 +1,17 @@
-'''
-Description
------------
-
-This module contains the method kfold, which is used to perform a stratified k-fold cross-validation. 
-The method is designed to work with eegdata dictionary.
-
-'''
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 import pandas as pd
 import inspect
 from ..core.util import util
-from ..sf.ea import ea
+from typing import Dict, Any, List, Optional
 
-def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_folding={}, pos_folding={}):
+def kfold(target: Dict[str, Any],
+          start_window: float or list,
+          start_test_window: Optional[float or list] = None,
+          pre_folding: Optional[Dict[str, tuple]] = None,
+          pos_folding: Dict[str, tuple] = {},
+          window_size: float = 1.0,
+          source: list = None) -> pd.DataFrame:
     '''
     This method is used to perform a stratified k-fold cross-validation. 
     The method is designed to work with eegdata dictionary.
@@ -32,6 +30,7 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
     pos_folding : dict
         A dictionary containing the postprocessing functions to be applied to the data before the cross-validation.
         The keys are the names of the postprocessing functions, and the values are the functions.
+        The 'clf' key is reserved for the classifier, and its value should be a tuple containing the classifier and its parameters.
     window_size : float 
             The size of the window to be used in the crop method of eegdata.
     source : list
@@ -48,6 +47,15 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
 
     if start_test_window is None:
         start_test_window = start_window
+    elif type(start_test_window) is float:
+        start_test_window = [start_test_window]
+    if not isinstance(start_window, list):
+        raise ValueError("start_window must be a float or a list of floats")
+    if not isinstance(start_test_window, list):
+        raise ValueError("start_test_window must be a list of floats")
+
+    if pre_folding is None:
+        pre_folding = {}
 
     target_dict = {}
     for tmin_ in start_test_window:
@@ -102,33 +110,9 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
                 y_pred = np.zeros((len(target_test[tmin_]['y']), len(target['y_dict'])))
             y_pred = np.round(y_pred, 4)
             for trial_ in range(len(y_pred)):
-                results.append([fold_id, tmin_, find_key_with_value(target['y_dict'], target_test[tmin_]['y'][trial_]), *y_pred[trial_]])
-
+                results.append([fold_id, tmin_, util.find_key_with_value(target['y_dict'], target_test[tmin_]['y'][trial_]), *y_pred[trial_]])
 
     results = np.array(results)
     results = pd.DataFrame(results, columns=['fold', 'tmin', 'true_label', *target['y_dict'].keys()])
 
     return results
-
-
-def find_key_with_value(dictionary, i):
-    '''
-    This function returns the key of a dictionary given a value.
-    
-    Parameters
-    ----------
-    dictionary : dict
-        The dictionary to be searched.
-    i : any
-        The value to be searched for.
-
-    Returns
-    -------
-    key : any
-        The key of the dictionary that contains the value i. If the value is not found, returns None.
-
-    '''
-    for key, value in dictionary.items():
-        if value == i:
-            return key
-    return None
