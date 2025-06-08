@@ -1,27 +1,23 @@
-"""
-Description
------------
-This module provides functionality to load EEG data from the CBCIC dataset. 
-It processes the data to fit the requirements of the `eegdata` dictionary, 
-which is used to store and process EEG data.
-"""
-
 import numpy as np
-import scipy
+from scipy.io import loadmat
+from typing import List, Optional, Dict, Any
 
 def cbcic(subject: int = 1, 
-          session_list: list = None,
-          labels: list = ['left-hand', 'right-hand'],
-          path: str = 'data/cbcic/'):
+          session_list: Optional[List[str]] = None,
+          labels: List[str] = ['left-hand', 'right-hand'],
+          path: str = 'data/cbcic/') -> Dict[str, Any]:
     """
-    This function loads EEG data for a specific subject and session from the CBCIC dataset.
+    This function loads EEG data for a specific subject and session from the cbcic dataset.
     It processes the data to fit the structure of the `eegdata` dictionary, which is used
     for further processing and analysis.
+
+    The dataset can be found at: 
+    https://github.com/5anirban9/Clinical-Brain-Computer-Interfaces-Challenge-WCCI-2020-Glasgow
 
     Parameters
     ----------
     subject : int, optional
-        Index of the subject to retrieve the data from. Must be between 1 and 9.
+        Index of the subject to retrieve the data from. Must be between 1 and 10.
         Default is 1.
     session_list : list, optional
         List of session codes to load. Valid options are 'T' (training) and 'E' (evaluation).
@@ -54,15 +50,17 @@ def cbcic(subject: int = 1,
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
+    >>> from bciflow.datasets import cbcic
     >>> eeg_data = cbcic(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     """
+
     # Check if the subject input is valid
     if type(subject) != int:
         raise ValueError("subject has to be an int type value")
-    if subject > 9 or subject < 1:
-        raise ValueError("subject has to be between 1 and 9")
+    if subject > 10 or subject < 1:
+        raise ValueError("subject has to be between 1 and 10")
 
     # Check if the session_list input is valid
     if type(session_list) != list and session_list is not None:
@@ -101,7 +99,7 @@ def cbcic(subject: int = 1,
     for sec in session_list:
         file_name = 'parsed_P%02d%s.mat' % (subject, sec)
         try:
-            raw = scipy.io.loadmat(path + file_name)
+            raw = loadmat(path + file_name)
         except:
             raise ValueError("The file %s does not exist in the path %s" % (file_name, path))
 

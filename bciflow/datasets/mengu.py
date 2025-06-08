@@ -1,24 +1,19 @@
-'''
-Description
------------
-This code is used to load EEG data from the MenGu dataset. 
-It modifies the data to fit the requirements of the eegdata dictionary, which is used to store and process EEG data.
-
-'''
-
 import numpy as np
 import h5py
+from typing import List, Optional, Dict, Any
 
-def mengu(subject: int=1, 
-          session_list: list=None,
-          labels: list=None,
-          depth: list=None,
+def mengu(subject: int = 1, 
+          session_list: Optional[List[str]] = None,
+          labels: Optional[List[str]] = None,
+          depth: Optional[List[str]] = None,
           path='data/mengu/'):
-    
     """
     Load EEG data from the MenGu dataset. 
     It modifies the data to fit the requirements of the eegdata dictionary, 
     which is used to store and process EEG data. 
+
+    The dataset can be found at:
+    ???
 
     Parameters
     ----------
@@ -59,6 +54,7 @@ def mengu(subject: int=1,
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
+    >>> from bciflow.datasets import mengu
     >>> eeg_data = mengu(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
