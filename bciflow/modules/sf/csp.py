@@ -1,17 +1,3 @@
-'''
-Description
------------
-This module implements the Common Spatial Patterns (CSP) filter, 
-a spatial filtering technique used to enhance the discriminability 
-of EEG signals for binary classification tasks.
-
-The CSP filter maximizes the variance of one class while 
-minimizing the variance of another, making it ideal for tasks like motor imagery classification. The implementation uses 
-eigenvalue decomposition to compute the spatial filters.
-
-Class
-------------
-'''
 import numpy as np
 import scipy as sp
 
@@ -27,7 +13,36 @@ class csp:
         (np.ndarray) The spatial filters.
     bands : 
         (int) The number of bands used.
+
+    Methods
+    -------
+    fit(eegdata: dict) -> np.ndarray
+        Fits the CSP filter to the input data, calculating the spatial filters.
+    transform(eegdata: dict) -> dict
+        Applies the learned spatial filters to the input data.
+    fit_transform(eegdata: dict) -> dict
+        Combines fitting and transforming into a single step.
+
+    Example
+    -------
+    >>> from bciflow.modules.sf.csp import csp
+    >>> import numpy as np
+    >>> csp_filter = csp(m_pairs=2)
+    >>> eegdata = {
+            'X': np.random.rand(100, 5, 64),  # 100 samples, 5 bands, 64 electrodes
+            'y': np.random.randint(0, 2, size=100)  # Binary classes
+        }
+    >>> csp_filter.fit(eegdata)
+    >>> transformed_data = csp_filter.transform(eegdata)
+    >>> print(transformed_data['X'].shape)
+
     '''
+
+    n_electrodes: int = None
+    m_pairs: int = 2
+    W: np.ndarray = None
+    bands: int = None
+
     def __init__(self, m_pairs: int = 2):
         if type(m_pairs) != int or m_pairs <= 0:
             raise ValueError("Must be a positive integer")
@@ -35,17 +50,24 @@ class csp:
             self.m_pairs = m_pairs
 
     def fit(self, eegdata: dict) -> np.ndarray:
-        ''' Fits the CSP filter to the input data, calculating the spatial filters.
+        ''' 
+        Fits the CSP filter to the input data, calculating the spatial filters.
         
         Parameters
         ----------
         eegdata : dict
-            The input data.
-        
-        returns
+            The input data containing 'X' (features) and 'y' (labels).
+
+        Returns
         -------
-        self
-            
+        self : csp
+            The fitted CSP object with spatial filters stored in W.
+        
+        Raises
+        ------
+        ValueError
+            If any of the input parameters are invalid
+
         '''
         X = None
         y = None
@@ -105,18 +127,24 @@ class csp:
     def transform(self, eegdata: dict) -> dict:
         ''' 
         Applies the learned spatial filters to the input data.
-        
+       
         Parameters
         ----------
         eegdata : dict
-            The input data.
-            
-        returns
+            The input data containing 'X' (features).
+
+        Returns
         -------
-        output : dict
-            The transformed data.
-            
+        eegdata : dict
+            The transformed data with 'X' containing the filtered features.
+
+        Raises
+        ------
+        ValueError
+            If the input data does not match the expected format or dimensions.
+        
         '''
+
         X = None
         y = None
         if type(eegdata['X']) != np.ndarray:
@@ -142,18 +170,24 @@ class csp:
     def fit_transform(self, eegdata: dict) -> dict:
         ''' 
         Combines fitting and transforming into a single step.
-
+        
         Parameters
         ----------
         eegdata : dict
-            The input data.
-        
-        returns
+            The input data containing 'X' (features) and 'y' (labels).
+
+        Returns
         -------
-        output : dict
-            The transformed data.
-            
+        eegdata : dict
+            The transformed data with 'X' containing the filtered features.
+
+        Raises
+        ------
+        ValueError
+            If the input data does not match the expected format or dimensions.
+        
         '''
+
         X = None
         y = None
         if type(eegdata['X']) != np.ndarray:

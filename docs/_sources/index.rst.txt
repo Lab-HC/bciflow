@@ -31,6 +31,15 @@ covering the entire process of creating BCI models.
    source/data_files
    source/examples
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorial
+
+   source/exploring_cbcic
+   source/data_processing
+   source/customCompsKfold
+   source/ownDataset
+
 .. toctree
    :maxdepth: 2
    :caption: Additional Links
