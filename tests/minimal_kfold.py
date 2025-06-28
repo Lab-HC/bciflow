@@ -1,6 +1,3 @@
-import os, sys
-project_directory = os.getcwd()
-sys.path.append(project_directory)
 
 from bciflow.datasets.CBCIC import cbcic
 from bciflow.modules.core.kfold import kfold

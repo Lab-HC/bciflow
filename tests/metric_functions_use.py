@@ -1,6 +1,3 @@
-import os, sys
-project_directory = os.getcwd()
-sys.path.append(project_directory)
 
 import pandas as pd
 from bciflow.modules.analysis.metric_functions import accuracy, kappa, logloss, rmse

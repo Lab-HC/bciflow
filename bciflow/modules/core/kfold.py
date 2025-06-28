@@ -22,10 +22,10 @@ def kfold(target, start_window=0, start_test_window=None, window_size=2, pre_fol
     ----------
     target : dict
         Input EEG data.
-    start_window : int
-
-    start_test_window : int
-
+    start_window : int or list of float, optional
+        Defines the initial time (in seconds) or list of initial times to extract training windows from the EEG signal.
+    start_test_window : int or list of float, optional
+        Defines the initial time (in seconds) or list of initial times to extract testing windows from the EEG signal.
     pre_folding : dict
         A dictionary containing the preprocessing functions to be applied to the data before the cross-validation.
         The keys are the names of the preprocessing functions, and the values are tuples containing the function and its parameters.
