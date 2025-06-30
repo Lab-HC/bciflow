@@ -40,7 +40,9 @@ def cbcic(subject: int = 1,
         events: Dictionary describing event markers.
         ch_names: List of channel names.
         tmin: Start time of the EEG data.
+        data_type: Explains how the data is placed inside the dictionary. Type 'epochs' means labels per trial and 'raw' means labels per time.
 
+        
     Raises
     ------
     ValueError
@@ -124,4 +126,5 @@ def cbcic(subject: int = 1,
             'y_dict': y_dict,
             'events': events, 
             'ch_names': ch_names,
-            'tmin': tmin}
+            'tmin': tmin,
+            'data_type': "epochs"}

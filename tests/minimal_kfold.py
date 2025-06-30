@@ -1,8 +1,5 @@
-import os, sys
-project_directory = os.getcwd()
-sys.path.append(project_directory)
 
-from bciflow.datasets.CBCIC import cbcic
+from bciflow.datasets.cbcic import cbcic
 from bciflow.modules.core.kfold import kfold
 from bciflow.modules.tf.bandpass.chebyshevII import chebyshevII
 from bciflow.modules.fe import logpower

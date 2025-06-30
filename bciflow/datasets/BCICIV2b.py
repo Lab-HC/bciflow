@@ -17,15 +17,15 @@ mne
 '''
 
 import numpy as np
+import pandas as pd
 import scipy
-
-
+import mne
 
 def bciciv2b(subject: int=1, 
              session_list: list=None, 
              run_list: list=None, 
              labels=['left-hand', 'right-hand'],
-             path: str = 'data/BCICIV2b/'):
+             path='data/BCICIV2b/'):
     """
         Description
         -----------
@@ -48,9 +48,19 @@ def bciciv2b(subject: int=1,
                 verbosity level
 
 
-        Returns:
-        ----------
-            eegdata: An instance of the eegdata class containing the loaded EEG data.
+        Returns
+        -------
+        dict
+            A dictionary containing the following keys:
+
+            X: EEG data as a numpy array.
+            y: Labels corresponding to the EEG data.
+            sfreq: Sampling frequency of the EEG data.
+            y_dict: Mapping of labels to integers.
+            events: Dictionary describing event markers.
+            ch_names: List of channel names.
+            tmin: Start time of the EEG data.
+            data_type: Explains how the data is placed inside the dictionary. Type 'epochs' means labels per trial and 'raw' means labels per time.
 
         """
 
@@ -62,11 +72,9 @@ def bciciv2b(subject: int=1,
         raise ValueError("Has to be an List or None type")
     if type(run_list) != list and run_list != None:
         raise ValueError("Has to be an List or None type")
-    if type(path) != str:
-        raise ValueError("path has to be a str type value")
     if path[-1] != '/':
         path += '/'
-
+        
     sfreq = 250.
     events = {'get_start': [0, 3],
                 'beep_sound': [2],
@@ -83,15 +91,22 @@ def bciciv2b(subject: int=1,
     rawData, rawLabels = [], []
 
     for sec in session_list:
-        file_name = 'parsed_P%02d%s.mat' % (subject, sec)
-        try:
-            raw = scipy.io.loadmat(path + file_name)
-        except:
-            raise ValueError("The file %s does not exist in the path %s" % (file_name, path))
+        raw=mne.io.read_raw_gdf(path+'B%02d%s.gdf'%(subject, sec), preload=True, verbose='ERROR')
+        raw_data = raw.get_data()[:3]
+        annotations = raw.annotations.to_data_frame()
+        first_timestamp = pd.to_datetime(annotations['onset'].iloc[0])
+        annotations['onset'] = (pd.to_datetime(annotations['onset']) - first_timestamp).dt.total_seconds()
+        annotations['description'] = annotations['description'].astype(int)
+        new_trial_time = np.array(annotations[annotations['description']==768]['onset'])
 
-        rawData_ = raw['RawEEGData']
-        rawLabels_ = np.reshape(raw['Labels'], -1)
-        rawData_ = np.reshape(rawData_, (rawData_.shape[0], 1, rawData_.shape[1], rawData_.shape[2]))
+        times_ = np.array(raw.times)
+        rawData_ = []
+        for trial_ in new_trial_time:
+            idx_ = np.where(times_ == trial_)[0][0]
+            rawData_.append(raw_data[:, idx_:idx_+2125])
+        rawData_ = np.array(rawData_)
+        rawLabels_ = np.array(scipy.io.loadmat(path+'B%02d%s.mat'%(subject, sec))['classlabel']).reshape(-1)
+
         rawData.append(rawData_)
         rawLabels.append(rawLabels_)
 
@@ -110,4 +125,5 @@ def bciciv2b(subject: int=1,
             'y_dict': labels_dict,
             'events': events, 
             'ch_names': ch_names,
-            'tmin': tmin}
+            'tmin': tmin,
+            'data_type': "epochs"}

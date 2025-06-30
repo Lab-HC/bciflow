@@ -1,8 +1,5 @@
-import os, sys
-project_directory = os.getcwd()
-sys.path.append(project_directory)
 
-from bciflow.datasets.CBCIC import cbcic
+from bciflow.datasets.c import cbcic
 from bciflow.modules.core.kfold import kfold
 from bciflow.modules.tf.filterbank import filterbank
 from bciflow.modules.sf.csp import csp

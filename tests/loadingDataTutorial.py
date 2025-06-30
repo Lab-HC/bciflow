@@ -1,4 +1,5 @@
-from bciflow.datasets.BCICIV2b import bciciv2b
+
+from bciflow.datasets.bciciv2b import bciciv2b
 
 dataset = bciciv2b(subject=1,path='data/BCICIV2b/')
 
