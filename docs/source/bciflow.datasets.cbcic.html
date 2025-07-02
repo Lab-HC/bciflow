@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="MenGu" href="bciflow.datasets.mengu.html" />
-    <link rel="prev" title="Datasets" href="bciflow.datasets.html" /> 
+    <link rel="prev" title="bciflow.datasets.bciciv2b module" href="bciflow.datasets.bciciv2b.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,6 +54,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="bciflow.datasets.html">Datasets</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="bciflow.datasets.html#eeg-dictionary">EEG Dictionary</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.bciciv2a.html">bciflow.datasets.bciciv2a module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.bciciv2b.html">bciflow.datasets.bciciv2b module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">CBCIC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.mengu.html">MenGu</a></li>
 </ul>
@@ -73,6 +75,10 @@
 <li class="toctree-l1"><a class="reference internal" href="data_processing.html">Introduction to Data Processing using bciflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customCompsKfold.html">Creating custom functions or classes for the <code class="docutils literal notranslate"><span class="pre">kfold</span></code> pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ownDataset.html">How to use a custom <code class="docutils literal notranslate"><span class="pre">dataset</span></code> with <code class="docutils literal notranslate"><span class="pre">bciflow</span></code> library</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="download_datasets.html">Download EEG Datasets</a></li>
 </ul>
 
         </div>
@@ -102,68 +108,13 @@
              
   <section id="cbcic">
 <span id="id1"></span><h1>CBCIC<a class="headerlink" href="#cbcic" title="Link to this heading"></a></h1>
-<p id="module-bciflow.datasets.cbcic">This function loads EEG data for a specific subject and session from the CBCIC dataset.
-It processes the data to fit the structure of the <cite>eegdata</cite> dictionary, which is used
-for further processing and analysis.</p>
-<dl class="field-list">
-<dt class="field-odd">param subject<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Index of the subject to retrieve the data from. Must be between 1 and 9.
-Default is 1.</p>
-</dd>
-<dt class="field-even">type subject<span class="colon">:</span></dt>
-<dd class="field-even"><p>int, optional</p>
-</dd>
-<dt class="field-odd">param session_list<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of session codes to load. Valid options are ‘T’ (training) and ‘E’ (evaluation).
-If None, all sessions are loaded. Default is None.</p>
-</dd>
-<dt class="field-even">type session_list<span class="colon">:</span></dt>
-<dd class="field-even"><p>list, optional</p>
-</dd>
-<dt class="field-odd">param labels<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of labels to include in the dataset. Valid options are ‘left-hand’ and ‘right-hand’.
-Default is [‘left-hand’, ‘right-hand’].</p>
-</dd>
-<dt class="field-even">type labels<span class="colon">:</span></dt>
-<dd class="field-even"><p>list, optional</p>
-</dd>
-<dt class="field-odd">param path<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Path to the folder containing the dataset files. Default is ‘data/cbcic/’.</p>
-</dd>
-<dt class="field-even">type path<span class="colon">:</span></dt>
-<dd class="field-even"><p>str, optional</p>
-</dd>
-<dt class="field-odd">returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary containing the following keys:</p>
-<p>X: EEG data as a numpy array.
-y: Labels corresponding to the EEG data.
-sfreq: Sampling frequency of the EEG data.
-y_dict: Mapping of labels to integers.
-events: Dictionary describing event markers.
-ch_names: List of channel names.
-tmin: Start time of the EEG data.</p>
-</dd>
-<dt class="field-even">rtype<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-<dt class="field-odd">raises ValueError<span class="colon">:</span></dt>
-<dd class="field-odd"><p>If any of the input parameters are invalid or if the specified file does not exist.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>Load EEG data for subject 1, all sessions, and default labels:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eeg_data</span> <span class="o">=</span> <span class="n">cbcic</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">eeg_data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># Shape of the EEG data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">eeg_data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span>  <span class="c1"># Labels</span>
-</pre></div>
-</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="bciflow.datasets.html" class="btn btn-neutral float-left" title="Datasets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bciflow.datasets.bciciv2b.html" class="btn btn-neutral float-left" title="bciflow.datasets.bciciv2b module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="bciflow.datasets.mengu.html" class="btn btn-neutral float-right" title="MenGu" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

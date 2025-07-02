@@ -61,14 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.clf.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.core.html">Core</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="bciflow.modules.analysis.html">Analysis</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Metric Functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.analysis.metric_functions.accuracy"><code class="docutils literal notranslate"><span class="pre">accuracy()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.analysis.metric_functions.kappa"><code class="docutils literal notranslate"><span class="pre">kappa()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.analysis.metric_functions.logloss"><code class="docutils literal notranslate"><span class="pre">logloss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.analysis.metric_functions.rmse"><code class="docutils literal notranslate"><span class="pre">rmse()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Metric Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -85,6 +78,10 @@
 <li class="toctree-l1"><a class="reference internal" href="data_processing.html">Introduction to Data Processing using bciflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customCompsKfold.html">Creating custom functions or classes for the <code class="docutils literal notranslate"><span class="pre">kfold</span></code> pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ownDataset.html">How to use a custom <code class="docutils literal notranslate"><span class="pre">dataset</span></code> with <code class="docutils literal notranslate"><span class="pre">bciflow</span></code> library</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="download_datasets.html">Download EEG Datasets</a></li>
 </ul>
 
         </div>
@@ -113,86 +110,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-bciflow.modules.analysis.metric_functions">
-<span id="metric-functions"></span><span id="mf"></span><h1>Metric Functions<a class="headerlink" href="#module-bciflow.modules.analysis.metric_functions" title="Link to this heading"></a></h1>
-<section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
-<p>This module contains the functions to calculate the metrics accuracy, Cohen’s
-kappa coefficient, logarithmic loss and root-mean-squared error. These
-functions are used to evaluate the performance of the given data.</p>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py" id="bciflow.modules.analysis.metric_functions.accuracy">
-<span class="sig-prename descclassname"><span class="pre">bciflow.modules.analysis.metric_functions.</span></span><span class="sig-name descname"><span class="pre">accuracy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/bciflow/modules/analysis/metric_functions.html#accuracy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.analysis.metric_functions.accuracy" title="Link to this definition"></a></dt>
-<dd><p>Calculates the accuracy given the correct labels and the predicted
-probabilities.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>results</strong> (<em>pandas.DataFrame</em>) – Dataframe with the true label and predicted probabilities.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Accuracy value.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bciflow.modules.analysis.metric_functions.kappa">
-<span class="sig-prename descclassname"><span class="pre">bciflow.modules.analysis.metric_functions.</span></span><span class="sig-name descname"><span class="pre">kappa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/bciflow/modules/analysis/metric_functions.html#kappa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.analysis.metric_functions.kappa" title="Link to this definition"></a></dt>
-<dd><p>Calculates the Cohen’s kappa coefficient given the correct labels and
-the predicted probabilities.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>results</strong> (<em>pandas.DataFrame</em>) – Dataframe with the true label and predicted probabilities.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Kappa value</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bciflow.modules.analysis.metric_functions.logloss">
-<span class="sig-prename descclassname"><span class="pre">bciflow.modules.analysis.metric_functions.</span></span><span class="sig-name descname"><span class="pre">logloss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/bciflow/modules/analysis/metric_functions.html#logloss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.analysis.metric_functions.logloss" title="Link to this definition"></a></dt>
-<dd><p>Calculates the logarithmic loss given the correct labels and the
-predicted probabilities.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>results</strong> (<em>pandas.DataFrame</em>) – Dataframe with the true label and predicted probabilities.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Logarithmic loss value.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bciflow.modules.analysis.metric_functions.rmse">
-<span class="sig-prename descclassname"><span class="pre">bciflow.modules.analysis.metric_functions.</span></span><span class="sig-name descname"><span class="pre">rmse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/bciflow/modules/analysis/metric_functions.html#rmse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.analysis.metric_functions.rmse" title="Link to this definition"></a></dt>
-<dd><p>Calculates the root-mean-squared error given the correct labels and the
-predicted probabilities.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>results</strong> (<em>pandas.DataFrame</em>) – Dataframe with the true label and predicted probabilities.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Root-mean-squared error value.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="metric-functions">
+<span id="mf"></span><h1>Metric Functions<a class="headerlink" href="#metric-functions" title="Link to this heading"></a></h1>
 </section>
 
 

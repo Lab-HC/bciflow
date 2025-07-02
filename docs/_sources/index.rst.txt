@@ -40,6 +40,13 @@ covering the entire process of creating BCI models.
    source/customCompsKfold
    source/ownDataset
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Additional Links
+
+   source/download_datasets
+
+
 .. toctree
    :maxdepth: 2
    :caption: Additional Links

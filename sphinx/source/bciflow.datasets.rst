@@ -28,5 +28,7 @@ The dictionary have the following keys:
    :maxdepth: 1
    :caption: List of datasets
    
+   bciflow.datasets.bciciv2a
+   bciflow.datasets.bciciv2b
    bciflow.datasets.cbcic
    bciflow.datasets.mengu
