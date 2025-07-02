@@ -20,19 +20,24 @@ import numpy as np
 import pandas as pd
 import scipy
 import mne
+from typing import List, Optional, Dict, Any
 
 def bciciv2b(subject: int=1, 
-             session_list: list=None, 
-             run_list: list=None, 
-             labels=['left-hand', 'right-hand'],
-             path='data/BCICIV2b/'):
+             session_list: List=None, 
+             run_list: List=None, 
+             labels: List[str] = ['left-hand', 'right-hand'],
+             path: str = 'data/BCICIV2b/') -> Dict[str, Any]:
     """
         Description
         -----------
         
         Load EEG data from the BCICIV2b dataset. 
         The data is loaded for a specific subject, session, and run.
-        The data is filtered based on the event codes specified in the 'labels_dict'.
+        The data is filtered based on the event codes specified in 'labels'.
+
+        The dataset can be found at:
+        Dataset - https://www.bbci.de/competition/iv/#download>
+        Label information - https://www.bbci.de/competition/iv/results/index.html#labels>
 
         Parameters
         ----------
@@ -42,10 +47,10 @@ def bciciv2b(subject: int=1,
                 list of session codes
             run_list : list, optional
                 list of run numbers
-            events_dict : dict
+            labels : dict
                 dictionary mapping event names to event codes
-            verbose : str
-                verbosity level
+            path :
+                path to the directory tha contains the datasets files.
 
 
         Returns

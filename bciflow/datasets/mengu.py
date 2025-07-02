@@ -13,7 +13,7 @@ def mengu(subject: int = 1,
     which is used to store and process EEG data. 
 
     The dataset can be found at:
-    ???
+    https://springernature.figshare.com/collections/An_open_dataset_for_human_SSVEPs_in_the_frequency_range_of_1-60_Hz/6752910/1
 
     Parameters
     ----------
