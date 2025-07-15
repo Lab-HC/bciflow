@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Empirical Mode Decomposition (EMD) &mdash; bciflow 1.0.0.dev3 documentation</title>
+  <title>Empirical Mode Decomposition (EMD) &mdash; bciflow 1.0.0.dev7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=57733e6b"></script>
+      <script src="../_static/documentation_options.js?v=ab0224cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -56,7 +56,12 @@
 <li class="toctree-l1 current"><a class="reference internal" href="bciflow.modules.html">Modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="bciflow.modules.tf.html">Temporal Filtering</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.bandpass.html">Bandpass Filtering</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Empirical Mode Decomposition (EMD)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Empirical Mode Decomposition (EMD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function">Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.tf.emd_sift.EMD"><code class="docutils literal notranslate"><span class="pre">EMD()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.filterbank.html">Filter Bank</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.resample_cubic.html">Cubic Resampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.resample_fft.html">FFT-based Resampling</a></li>
@@ -115,8 +120,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="empirical-mode-decomposition-emd">
-<span id="emd"></span><h1>Empirical Mode Decomposition (EMD)<a class="headerlink" href="#empirical-mode-decomposition-emd" title="Link to this heading"></a></h1>
+  <section id="module-bciflow.modules.tf.emd_sift">
+<span id="empirical-mode-decomposition-emd"></span><span id="emd"></span><h1>Empirical Mode Decomposition (EMD)<a class="headerlink" href="#module-bciflow.modules.tf.emd_sift" title="Link to this heading"></a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
+<p>This module implements Empirical Mode Decomposition (EMD) for EEG data.
+The <cite>EMD</cite> function decomposes the input signals into Intrinsic Mode
+Functions (IMFs), which are oscillatory components extracted from the data.</p>
+</section>
+<section id="function">
+<h2>Function<a class="headerlink" href="#function" title="Link to this heading"></a></h2>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="bciflow.modules.tf.emd_sift.EMD">
+<span class="sig-prename descclassname"><span class="pre">bciflow.modules.tf.emd_sift.</span></span><span class="sig-name descname"><span class="pre">EMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eegdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_imfs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/tf/emd_sift.html#EMD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.tf.emd_sift.EMD" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eegdata</strong> (<em>dict</em>) – A dictionary containing the EEG data, where the key ‘X’ holds the raw signal.</p></li>
+<li><p><strong>n_imfs</strong> (<em>int</em>) – The number of IMFs to extract (default is 5).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The same dictionary passed in parameters, but with the transformed data stored under the key ‘X’. The shape of the transformed data is (n_trials, n_imfs, n_electrodes, n_samples).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the input data does not have exactly one band (shape[1] != 1).</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="simple">
 <dt>The implementation uses the <cite>emd</cite> library to perform the decomposition. For more details on EMD, refer to:</dt><dd><ul class="simple">
 <li><p>Huang, N. E., et al. (1998). <em>The Empirical Mode Decomposition and the Hilbert Spectrum for Nonlinear and Non-Stationary Time Series Analysis</em>.</p></li>

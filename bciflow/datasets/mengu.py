@@ -8,12 +8,12 @@ def mengu(subject: int = 1,
           depth: Optional[List[str]] = None,
           path='data/mengu/'):
     '''
-    Load EEG data from the MenGu dataset. 
-    It modifies the data to fit the requirements of the eegdata dictionary, 
-    which is used to store and process EEG data. 
+    This function loads EEG data for a specific subject and session from the MenGu dataset.
+    It processes the data to fit the structure of the `eegdata` dictionary, which is used
+    for further processing and analysis.
 
     The dataset can be found at:
-    https://springernature.figshare.com/collections/An_open_dataset_for_human_SSVEPs_in_the_frequency_range_of_1-60_Hz/6752910/1
+     - https://springernature.figshare.com/collections/An_open_dataset_for_human_SSVEPs_in_the_frequency_range_of_1-60_Hz/6752910/1
 
     Parameters
     ----------
@@ -37,14 +37,14 @@ def mengu(subject: int = 1,
     dict
         A dictionary containing the following keys:
 
-        X: EEG data as a numpy array.
-        y: Labels corresponding to the EEG data.
-        sfreq: Sampling frequency of the EEG data.
-        y_dict: Mapping of labels to integers.
-        events: Dictionary describing event markers.
-        ch_names: List of channel names.
-        tmin: Start time of the EEG data.
-        data_type: Explains how the data is placed inside the dictionary. Type 'epochs' means labels per trial and 'raw' means labels per time.
+        - X: EEG data as a numpy array.
+        - y: Labels corresponding to the EEG data.
+        - sfreq: Sampling frequency of the EEG data.
+        - y_dict: Mapping of labels to integers.
+        - events: Dictionary describing event markers.
+        - ch_names: List of channel names.
+        - tmin: Start time of the EEG data.
+        - data_type: Type of the data ('epochs').
 
     Raises
     ------

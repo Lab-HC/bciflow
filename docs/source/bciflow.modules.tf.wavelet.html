@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wavelet &mdash; bciflow 1.0.0.dev3 documentation</title>
+  <title>Wavelet &mdash; bciflow 1.0.0.dev7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=57733e6b"></script>
+      <script src="../_static/documentation_options.js?v=ab0224cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -60,7 +60,12 @@
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.filterbank.html">Filter Bank</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.resample_cubic.html">Cubic Resampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.tf.resample_fft.html">FFT-based Resampling</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Wavelet</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Wavelet</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function">Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.tf.wavelet.wavelet"><code class="docutils literal notranslate"><span class="pre">wavelet()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.sf.html">Spatial Filtering</a></li>
@@ -117,6 +122,34 @@
              
   <section id="wavelet">
 <span id="id1"></span><h1>Wavelet<a class="headerlink" href="#wavelet" title="Link to this heading"></a></h1>
+<section id="description">
+<span id="module-bciflow.modules.tf.wavelet"></span><h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
+<p>This module implements the Continuous Wavelet Transform (CWT) using the Morlet wavelet.
+The CWT is a time-frequency analysis tool that decomposes a signal into wavelets,
+providing localized frequency information over time.</p>
+</section>
+<section id="function">
+<h2>Function<a class="headerlink" href="#function" title="Link to this heading"></a></h2>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="bciflow.modules.tf.wavelet.wavelet">
+<span class="sig-prename descclassname"><span class="pre">bciflow.modules.tf.wavelet.</span></span><span class="sig-name descname"><span class="pre">wavelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eegdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/tf/wavelet.html#wavelet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.tf.wavelet.wavelet" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eegdata</strong> (<em>dict</em>) – A dictionary containing the EEG data, where the key ‘X’ holds the raw signal.</p></li>
+<li><p><strong>levels</strong> (<em>int</em>) – The number of decomposition levels (scales) for the wavelet transform.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The same dictionary passed in parameters, but with the transformed data stored under the key ‘X’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="simple">
 <dt>The implementation uses the <cite>pywt</cite> library to compute the CWT. For more details on wavelet transforms, refer to:</dt><dd><ul class="simple">
 <li><p>Addison, P. S. (2017). <em>The Illustrated Wavelet Transform Handbook</em>. CRC Press.</p></li>
