@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Average Power Spectral Density (APSD) &mdash; bciflow 1.0.0.dev3 documentation</title>
+  <title>Average Power Spectral Density (APSD) &mdash; bciflow 1.0.0.dev7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=57733e6b"></script>
+      <script src="../_static/documentation_options.js?v=ab0224cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -57,7 +57,12 @@
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.tf.html">Temporal Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bciflow.modules.sf.html">Spatial Filtering</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="bciflow.modules.fe.html">Feature Extraction</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Average Power Spectral Density (APSD)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Average Power Spectral Density (APSD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class">Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bciflow.modules.fe.apsd.apsd"><code class="docutils literal notranslate"><span class="pre">apsd</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.fe.curvelength.html">Curve Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.fe.logpower.html">Log Power</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.modules.fe.nonlinearenergy.html">Nonlinear Energy</a></li>
@@ -114,8 +119,86 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="average-power-spectral-density-apsd">
-<span id="apsd"></span><h1>Average Power Spectral Density (APSD)<a class="headerlink" href="#average-power-spectral-density-apsd" title="Link to this heading"></a></h1>
+  <section id="module-bciflow.modules.fe.apsd">
+<span id="average-power-spectral-density-apsd"></span><span id="apsd"></span><h1>Average Power Spectral Density (APSD)<a class="headerlink" href="#module-bciflow.modules.fe.apsd" title="Link to this heading"></a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
+<p>This module implements the Average Power Spectral Density (APSD) feature extractor,
+which computes the average power in specific frequency bands of EEG signals.
+This feature is commonly used in BCI applications to characterize brain activity.</p>
+<p>The APSD is calculated using Welch’s method, which estimates the power spectral density
+by dividing the signal into overlapping segments and averaging their periodograms.</p>
+</section>
+<section id="class">
+<h2>Class<a class="headerlink" href="#class" title="Link to this heading"></a></h2>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="bciflow.modules.fe.apsd.apsd">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bciflow.modules.fe.apsd.</span></span><span class="sig-name descname"><span class="pre">apsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/fe/apsd.html#apsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.fe.apsd.apsd" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bciflow.modules.fe.apsd.apsd.flating">
+<span class="sig-name descname"><span class="pre">flating</span></span><a class="headerlink" href="#bciflow.modules.fe.apsd.apsd.flating" title="Link to this definition"></a></dt>
+<dd><p>If True, the output data is returned in a flattened format (default is False).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bciflow.modules.fe.apsd.apsd.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eegdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bciflow/modules/fe/apsd.html#apsd.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.fe.apsd.apsd.fit" title="Link to this definition"></a></dt>
+<dd><p>This method does nothing, as the APSD feature extractor does not require training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>eegdata</strong> (<em>dict</em>) – The input data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bciflow.modules.fe.apsd.apsd.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eegdata</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/bciflow/modules/fe/apsd.html#apsd.fit_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.fe.apsd.apsd.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>This method combines fitting and transforming into a single step. It returns a
+dictionary with the transformed data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>eegdata</strong> (<em>dict</em>) – The input data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – The transformed data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bciflow.modules.fe.apsd.apsd.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eegdata</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/bciflow/modules/fe/apsd.html#apsd.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.modules.fe.apsd.apsd.transform" title="Link to this definition"></a></dt>
+<dd><p>This method computes the average power spectral density (APSD) for each trial, band,
+and channel in the input data. The result is stored in the dictionary under the key ‘X’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>eegdata</strong> (<em>dict</em>) – The input data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – The transformed data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

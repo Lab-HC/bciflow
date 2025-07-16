@@ -7,12 +7,15 @@ def cbcic(subject: int = 1,
           labels: List[str] = ['left-hand', 'right-hand'],
           path: str = 'data/cbcic/') -> Dict[str, Any]:
     '''
+    Description
+    -----------
+
     This function loads EEG data for a specific subject and session from the cbcic dataset.
     It processes the data to fit the structure of the `eegdata` dictionary, which is used
     for further processing and analysis.
 
     The dataset can be found at: 
-    https://github.com/5anirban9/Clinical-Brain-Computer-Interfaces-Challenge-WCCI-2020-Glasgow
+     - https://github.com/5anirban9/Clinical-Brain-Computer-Interfaces-Challenge-WCCI-2020-Glasgow
 
     Parameters
     ----------
@@ -33,14 +36,14 @@ def cbcic(subject: int = 1,
     dict
         A dictionary containing the following keys:
 
-        X: EEG data as a numpy array.
-        y: Labels corresponding to the EEG data.
-        sfreq: Sampling frequency of the EEG data.
-        y_dict: Mapping of labels to integers.
-        events: Dictionary describing event markers.
-        ch_names: List of channel names.
-        tmin: Start time of the EEG data.
-        data_type: Explains how the data is placed inside the dictionary. Type 'epochs' means labels per trial and 'raw' means labels per time.
+        - X: EEG data as a numpy array [trials, 1, channels, time].
+        - y: Labels corresponding to the EEG data.
+        - sfreq: Sampling frequency of the EEG data.
+        - y_dict: Mapping of labels to integers.
+        - events: Dictionary describing event markers.
+        - ch_names: List of channel names.
+        - tmin: Start time of the EEG data.
+        - data_type: Type of the data ('epochs').
 
         
     Raises

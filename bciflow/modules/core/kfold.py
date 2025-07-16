@@ -83,10 +83,10 @@ def kfold(target: Dict[str, Any],
         start_test_window = start_window
     elif type(start_test_window) is float:
         start_test_window = [start_test_window]
-    if not isinstance(start_window, list):
-        raise ValueError("start_window must be a float or a list of floats")
-    if not isinstance(start_test_window, list):
-        raise ValueError("start_test_window must be a list of floats")
+    # if not isinstance(start_window, list):
+    #     raise ValueError("start_window must be a float or a list of floats")
+    # if not isinstance(start_test_window, list):
+    #     raise ValueError("start_test_window must be a list of floats")
 
     if pre_folding is None:
         pre_folding = {}

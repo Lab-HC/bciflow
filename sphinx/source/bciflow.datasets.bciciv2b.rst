@@ -1,5 +1,7 @@
-bciflow.datasets.bciciv2b module
-================================
+.. _bciciv2b:
+========================
+BCICIV2b
+========================
 
 .. automodule:: bciflow.datasets.bciciv2b
    :members:

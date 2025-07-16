@@ -4,7 +4,7 @@ BCICIV2a.py
 Description
 -----------
 This code is used to load EEG data from the BCICIV2a dataset. 
-It modifies the data to fit the requirements of the eegdata class, 
+It modifies the data to fit the requirements of the eegdata dict, 
 which is used to store and process EEG data. 
 
 Dependencies
@@ -23,58 +23,67 @@ import mne
 from typing import List, Optional, Dict, Any
 
 def bciciv2a(subject: int=1, 
-             session_list: List=None, 
-             run_list: List=None, 
-             labels: List[str] = ['left-hand', 'right-hand'],
+             session_list: Optional[List[str]] = None,
+             labels: List[str] = ['left-hand','right-hand',"both-feet","tongue"],
              path: str = 'data/BCICIV2a/') -> Dict[str, Any]:
     """
-        Description
-        -----------
+    Description
+    -----------
         
-        Load EEG data from the BCICIV2a dataset. 
-        The data is loaded for a specific subject, session, and run.
-        The data is filtered based on the event codes specified in 'labels'.
+    This function loads EEG data for a specific subject and session from the bciciv2b dataset.
+    It processes the data to fit the structure of the `eegdata` dictionary, which is used
+    for further processing and analysis.
 
-        The dataset can be found at:
-        Dataset - https://www.bbci.de/competition/iv/#download>
-        Label information - https://www.bbci.de/competition/iv/results/index.html#labels>
-        
-        Parameters
-        ----------
-            subject : int
-                index of the subject to retrieve the data from
-            session_list : list, optional
-                list of session codes
-            run_list : list, optional
-                list of run numbers
-            labels : dict
-                dictionary mapping event names to event codes
-            path :
-                path to the directory tha contains the datasets files.
+    The dataset can be found at:
+     - https://www.bbci.de/competition/iv/#download
+     - https://www.bbci.de/competition/iv/results/index.html#labels
+    
+    Parameters
+    ----------
+        subject : int
+            index of the subject to retrieve the data from
+        session_list : list, optional
+            list of session codes
+        labels : dict
+            dictionary mapping event names to event codes
+        path :
+            path to the directory tha contains the datasets files.
 
-        Returns
-        -------
-        dict
-            A dictionary containing the following keys:
+    Returns
+    -------
+    dict
+        A dictionary containing the following keys:
 
-            X: EEG data as a numpy array.
-            y: Labels corresponding to the EEG data.
-            sfreq: Sampling frequency of the EEG data.
-            y_dict: Mapping of labels to integers.
-            events: Dictionary describing event markers.
-            ch_names: List of channel names.
-            tmin: Start time of the EEG data.
-            data_type: Explains how the data is placed inside the dictionary. Type 'epochs' means labels per trial and 'raw' means labels per time.
+        - X: EEG data as a numpy array [trials, 1, channels, time].
+        - y: Labels corresponding to the EEG data.
+        - sfreq: Sampling frequency of the EEG data.
+        - y_dict: Mapping of labels to integers.
+        - events: Dictionary describing event markers.
+        - ch_names: List of channel names.
+        - tmin: Start time of the EEG data.
+        - data_type: Type of the data ('epochs').
 
-        """
+    Examples
+    --------
+    Load EEG data for subject 1, all sessions, and default labels:
+
+    >>> from bciflow.datasets import bciciv2a
+    >>> eeg_data = bciciv2a(subject=1)
+    >>> print(eeg_data['X'].shape)  # Shape of the EEG data
+    >>> print(eeg_data['y'])  # Labels
+    '''
+    """
 
     if type(subject) != int:
         raise ValueError("Has to be a int type value")
     if subject > 9 or subject < 1:
         raise ValueError("Has to be an existing subject")
+    if type(labels) != list:
+        raise ValueError("labels has to be a list type value")
+    for i in labels:
+        if i not in ['left-hand','right-hand','both-feet','tongue']:
+            raise ValueError("labels has to be a sublist of ['left-hand','right-hand','both-feet','tongue'],")
     if type(session_list) != list and session_list != None:
-        raise ValueError("Has to be an List or None type")
-    if type(run_list) != list and run_list != None:
         raise ValueError("Has to be an List or None type")
     if path[-1] != '/':
         path += '/'
@@ -126,7 +135,7 @@ def bciciv2a(subject: int=1,
     X, y = X[selected_labels], y[selected_labels]
     y_dict = {labels[i]: i for i in range(len(labels))}
     y = np.array([y_dict[i] for i in y])
-    print(X.shape, y.shape)
+
     return {'X': X, 
             'y': y, 
             'sfreq': sfreq, 
