@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "bciflow"
 
-version = "1.0.0.dev7"
+version = "1.0.0.dev8"
 
 authors = [
   { name="Gabriel Henrique de Souza", email="gabriel.souza@ufjf.br" },

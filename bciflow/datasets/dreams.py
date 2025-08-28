@@ -51,26 +51,6 @@ def dreams_dataset(
         - tmin: Start time of the EEG data.
         - data_type: Type of data returned ("raw" or "epochs").
 
-        Dictionary with the following fields:
-        - X : numpy array
-            EEG/biological data in format:
-              * raw mode: (1, 1, n_channels, total_samples)
-              * epochs mode: (n_trials, 1, n_channels, samples_per_window)
-        - y : numpy array
-            Corresponding hypnogram labels (expanded per sample if raw, per trial if epochs).
-        - sfreq : float
-            Sampling frequency of the signals.
-        - y_dict : dict
-            Mapping of sleep stage names to integers.
-        - events : None
-            Placeholder for event dictionary (not implemented).
-        - ch_names : list
-            List of available channel names.
-        - tmin : float
-            Start time of the signals (default = 0.0).
-        - data_type : str
-            Type of data returned ("raw" or "epochs").
-
     Raises
     ------
     FileNotFoundError

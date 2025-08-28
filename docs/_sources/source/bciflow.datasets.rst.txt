@@ -33,5 +33,6 @@ The dictionary have the following keys:
    bciflow.datasets.bciciv2a
    bciflow.datasets.bciciv2b
    bciflow.datasets.cbcic
+   bciflow.datasets.dreams
    bciflow.datasets.mengu
    
