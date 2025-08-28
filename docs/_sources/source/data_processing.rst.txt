@@ -85,10 +85,10 @@ After that, we can go to the next stage by adding, in order, the stages of the a
    clf = lda()
    
    pos_folding = {
-       'sf': {sf, ()},
-       'fe': {fe, ()},
-       'fs': {fs, ()},
-       'clf': {clf, ()}
+       'sf': (sf, {}),
+       'fe': (fe, {}),
+       'fs': (fs, {}),
+       'clf': (clf, {})
    }
 
 5. Running the Pipeline
