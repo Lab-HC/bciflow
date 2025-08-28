@@ -1,6 +1,22 @@
 import numpy as np
 import scipy as sp
+'''
+Description
+-----------
+This module implements the Common Spatial Pattern (CSP) method, a spatial filtering 
+technique widely used in Brain-Computer Interfaces (BCI) to extract discriminative 
+features from EEG signals. CSP aims to maximize variance for one class while 
+minimizing it for the other, making it particularly effective for binary classification 
+tasks such as motor imagery. 
 
+The CSP algorithm learns spatial filters from EEG data by solving a generalized 
+eigenvalue problem between the covariance matrices of the two classes. The 
+resulting filters project the signals into a subspace where differences between 
+classes are more pronounced, facilitating subsequent classification.
+
+Class
+-----
+'''
 class csp:
     '''
     Attributes

@@ -1,7 +1,7 @@
 
-from bciflow.datasets.bciciv2b import bciciv2b
+from bciflow.datasets.cbcic import cbcic    
 
-dataset = bciciv2b(subject=1,path='data/BCICIV2b/')
+dataset = cbcic(subject=1,path='data/cbcic/')
 
 print("EEG signals shape:", dataset["X"].shape)
 print("Labels:", dataset["y"])
