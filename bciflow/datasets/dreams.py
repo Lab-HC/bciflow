@@ -40,6 +40,17 @@ def dreams_dataset(
     Returns
     -------
     dict
+        A dictionary containing the following keys:
+
+        - X: EEG data as a numpy array [trials, 1, channels, time] or [1, 1, channels, samples].
+        - y: Labels corresponding to the EEG data (expanded per sample if raw, per trial if epochs).
+        - sfreq: Sampling frequency of the EEG data.
+        - y_dict: Mapping of labels to integers.
+        - events: Dictionary describing event markers.
+        - ch_names: List of channel names.
+        - tmin: Start time of the EEG data.
+        - data_type: Type of data returned ("raw" or "epochs").
+
         Dictionary with the following fields:
         - X : numpy array
             EEG/biological data in format:
