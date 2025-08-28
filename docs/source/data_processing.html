@@ -163,7 +163,7 @@ filterbank to apply multiple bandpass filters and capture patterns in different
 frequency bands:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bciflow.modules.tf.filterbank</span><span class="w"> </span><span class="kn">import</span> <span class="n">filterbank</span>
 
-<span class="n">pre_folding</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">filterbank</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;kind_bp&#39;</span><span class="p">:</span> <span class="s1">&#39;chebyshevII&#39;</span><span class="p">}}}</span>
+<span class="n">pre_folding</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">filterbank</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;kind_bp&#39;</span><span class="p">:</span> <span class="s1">&#39;chebyshevII&#39;</span><span class="p">})}</span>
 </pre></div>
 </div>
 </section>
@@ -187,10 +187,10 @@ frequency bands:</p>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">lda</span><span class="p">()</span>
 
 <span class="n">pos_folding</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">sf</span><span class="p">,</span> <span class="p">{}},</span>
-    <span class="s1">&#39;fe&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fe</span><span class="p">,</span> <span class="p">{}},</span>
-    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fs</span><span class="p">,</span> <span class="p">{}},</span>
-    <span class="s1">&#39;clf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">clf</span><span class="p">,</span> <span class="p">{}}</span>
+    <span class="s1">&#39;sf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="p">{}),</span>
+    <span class="s1">&#39;fe&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">fe</span><span class="p">,</span> <span class="p">{}),</span>
+    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="p">{}),</span>
+    <span class="s1">&#39;clf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="p">{})</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -253,10 +253,10 @@ the window of study starting 0.5 seconds after the cue:</p>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">lda</span><span class="p">()</span>
 
 <span class="n">pos_folding</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">sf</span><span class="p">,</span> <span class="p">{}},</span>
-    <span class="s1">&#39;fe&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fe</span><span class="p">,</span> <span class="p">{}},</span>
-    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fs</span><span class="p">,</span> <span class="p">{}},</span>
-    <span class="s1">&#39;clf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">clf</span><span class="p">,</span> <span class="p">{}}</span>
+    <span class="s1">&#39;sf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">sf</span><span class="p">,</span> <span class="p">()},</span>
+    <span class="s1">&#39;fe&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fe</span><span class="p">,</span> <span class="p">()},</span>
+    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fs</span><span class="p">,</span> <span class="p">()},</span>
+    <span class="s1">&#39;clf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">clf</span><span class="p">,</span> <span class="p">()}</span>
 <span class="p">}</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">kfold</span><span class="p">(</span>

@@ -56,13 +56,12 @@
 <li class="toctree-l2 current"><a class="reference internal" href="bciflow.datasets.html#eeg-dictionary">EEG Dictionary</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.attention.html">Attention</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">BCICIV2a</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bciflow.datasets.bciciv2a.bciciv2a"><code class="docutils literal notranslate"><span class="pre">bciciv2a()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.bciciv2b.html">BCICIV2b</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.cbcic.html">CBCIC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.dreams.html">Dreams</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bciflow.datasets.mengu.html">MenGu</a></li>
 </ul>
 </li>
@@ -114,25 +113,11 @@
              
   <section id="bciciv2a">
 <span id="id1"></span><h1>BCICIV2a<a class="headerlink" href="#bciciv2a" title="Link to this heading"></a></h1>
-<p id="module-bciflow.datasets.bciciv2a">BCICIV2a.py</p>
-<section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
-<p>This code is used to load EEG data from the BCICIV2a dataset.
-It modifies the data to fit the requirements of the eegdata dict,
-which is used to store and process EEG data.</p>
-</section>
-<section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
-<p>numpy
-pandas
-scipy
-mne</p>
-</section>
-<dl class="py function">
+<dl class="py function" id="module-bciflow.datasets.bciciv2a">
 <dt class="sig sig-object py" id="bciflow.datasets.bciciv2a.bciciv2a">
 <span class="sig-prename descclassname"><span class="pre">bciflow.datasets.bciciv2a.</span></span><span class="sig-name descname"><span class="pre">bciciv2a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="bciflow.modules.core.util.html#bciflow.modules.core.util.util.None" title="bciflow.modules.core.util.util.None"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['left-hand',</span> <span class="pre">'right-hand',</span> <span class="pre">'both-feet',</span> <span class="pre">'tongue']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'data/BCICIV2a/'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bciflow/datasets/bciciv2a.html#bciciv2a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bciflow.datasets.bciciv2a.bciciv2a" title="Link to this definition"></a></dt>
-<dd><section id="id2">
-<h2>Description<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<dd><section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
 <p>This function loads EEG data for a specific subject and session from the bciciv2b dataset.
 It processes the data to fit the structure of the <cite>eegdata</cite> dictionary, which is used
 for further processing and analysis.</p>

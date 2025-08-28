@@ -1,21 +1,3 @@
-'''
-BCICIV2b.py
-
-Description
------------
-This code is used to load EEG data from the BCICIV2b dataset. 
-It modifies the data to fit the requirements of the eegdata dict, 
-which is used to store and process EEG data. 
-
-Dependencies
-------------
-numpy
-pandas
-scipy
-mne 
-
-'''
-
 import numpy as np
 import pandas as pd
 import scipy
@@ -137,7 +119,7 @@ def bciciv2b(subject: int=1,
     return {'X': X, 
             'y': y, 
             'sfreq': sfreq, 
-            'y_dict': labels_dict,
+            'y_dict': y_dict,
             'events': events, 
             'ch_names': ch_names,
             'tmin': tmin,

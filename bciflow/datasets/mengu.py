@@ -8,6 +8,9 @@ def mengu(subject: int = 1,
           depth: Optional[List[str]] = None,
           path='data/mengu/'):
     '''
+    Description
+    -----------
+    
     This function loads EEG data for a specific subject and session from the MenGu dataset.
     It processes the data to fit the structure of the `eegdata` dictionary, which is used
     for further processing and analysis.

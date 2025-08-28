@@ -24,3 +24,48 @@ The datasets must be loaded by the user, and the data path must be provided by t
         labels=['left-hand', 'right-hand'],  # Labels to include
         path='data/cbcic/'  # Path to the dataset files
     )
+
+
+## Implemented Methods
+
+| Method                                             | Category             | Implemented |
+|----------------------------------------------------|----------------------|-------------|
+| **Temporal Filtering**                             |                      |             |
+| Bandpass Filtering                                 | Temporal Filtering   | Yes |
+| Chebyshev II Filter                                | Pre-processing       | Yes |
+| Signal Convolution                                 | Pre-processing       | Yes |
+| Empirical Mode Decomposition (EMD)                 | Temporal Filtering   | Yes |
+| Filter Bank (ChebyshevII)                          | Temporal Filtering   | Yes |
+| Filter Bank (Convolution)                          | Temporal Filtering   | Yes |
+| Cubic Resampling                                   | Temporal Filtering   | No |
+| FFT-based Resampling                               | Temporal Filtering   | No |
+| Wavelet                                            | Temporal Filtering   | Yes |
+| Short-Time Fourier Transform (STFT)                | Temporal Filtering   | No |
+|                                                    |                      |             |
+| **Spatial Filtering**                              |                      |             |
+| Common Spatial Patterns (CSP)                      | Spatial Filtering    | Yes |
+| Euclidean Alignment (EA)                           | Spatial Filtering    | Yes |
+|                                                    |                      |             |
+| **Feature Extraction**                             |                      |             |
+| Average Power Spectral Density (APSD)              | Feature Extraction   | Yes |
+| Curve Length                                       | Feature Extraction   | Yes |
+| Log Power                                          | Feature Extraction   | Yes |
+| Nonlinear Energy                                   | Feature Extraction   | Yes |
+| Welch Periodogram                                  | Feature Extraction   | Yes |
+| Canonical Correlation Analysis (CCA)               | Feature Extraction   | No |
+| Logarithmic PSD (LPSD)                             | Feature Extraction   | No |
+|                                                    |                      |             |
+| **Feature Selection**                              |                      |             |
+| Mutual Information Best Individual Features (MIBIF)| Feature Selection    | Yes |
+|                                                    |                      |             |
+| **Classification**                                 |                      |             |
+| Naive Bayes Parzen Window (NBPW)                   | Classification       | Yes |
+|                                                    |                      |             |
+| **Data Augmentation**                              |                      |             |
+| EMD-based Augmentation (emdaug)                    | Data Augmentation    | No |
+| Gaussian Noise (gaussiannoise)                     | Data Augmentation    | No |
+| Time-frequency Gaussian Noise (tfgaussiannoise)    | Data Augmentation    | No |
+| Time-frequency Recombination (tfrecombination)     | Data Augmentation    | No |
+
+
+
