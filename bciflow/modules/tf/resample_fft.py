@@ -30,7 +30,7 @@ def fft_resample(eegdata, new_sfreq):
     X = eegdata['X'].copy()
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
     sfreq = eegdata['sfreq']
-    divisor = sfreq//new_sfreq
+    divisor = sfreq/new_sfreq
     duration = X.shape[-1]/sfreq
     old_times = np.arange(0, duration, 1./sfreq)
     new_times = np.arange(0, duration, 1./new_sfreq)
@@ -41,7 +41,7 @@ def fft_resample(eegdata, new_sfreq):
         X_.append(new_signal)
 
     X_ = np.array(X_)
-    X_ = X_.reshape(*eegdata['X'].shape[:-1],eegdata['X'].shape[-1]//divisor )
+    X_ = X_.reshape(eegdata['X'].shape[0],eegdata['X'].shape[1],eegdata['X'].shape[2],X_.shape[-1] )
 
     eegdata['X'] = X_
     eegdata['sfreq'] = new_sfreq
