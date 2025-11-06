@@ -245,7 +245,7 @@ the window of study starting 0.5 seconds after the cue:</p>
 
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">cbcic</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;data/cbcic/&#39;</span><span class="p">)</span>
 
-<span class="n">pre_folding</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">filterbank</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;kind_bp&#39;</span><span class="p">:</span> <span class="s1">&#39;chebyshevII&#39;</span><span class="p">}}}</span>
+<span class="n">pre_folding</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">filterbank</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;kind_bp&#39;</span><span class="p">:</span> <span class="s1">&#39;chebyshevII&#39;</span><span class="p">})}</span>
 
 <span class="n">sf</span> <span class="o">=</span> <span class="n">csp</span><span class="p">()</span>
 <span class="n">fe</span> <span class="o">=</span> <span class="n">logpower</span>
@@ -253,10 +253,10 @@ the window of study starting 0.5 seconds after the cue:</p>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">lda</span><span class="p">()</span>
 
 <span class="n">pos_folding</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">sf</span><span class="p">,</span> <span class="p">()},</span>
-    <span class="s1">&#39;fe&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fe</span><span class="p">,</span> <span class="p">()},</span>
-    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">fs</span><span class="p">,</span> <span class="p">()},</span>
-    <span class="s1">&#39;clf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">clf</span><span class="p">,</span> <span class="p">()}</span>
+    <span class="s1">&#39;sf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="p">{}),</span>
+    <span class="s1">&#39;fe&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">fe</span><span class="p">,</span> <span class="p">{}),</span>
+    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="p">{}),</span>
+    <span class="s1">&#39;clf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="p">{})</span>
 <span class="p">}</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">kfold</span><span class="p">(</span>

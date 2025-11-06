@@ -37,8 +37,8 @@ The datasets must be loaded by the user, and the data path must be provided by t
 | Empirical Mode Decomposition (EMD)                 | Temporal Filtering   | Yes |
 | Filter Bank (ChebyshevII)                          | Temporal Filtering   | Yes |
 | Filter Bank (Convolution)                          | Temporal Filtering   | Yes |
-| Cubic Resampling                                   | Temporal Filtering   | No |
-| FFT-based Resampling                               | Temporal Filtering   | No |
+| Cubic Resampling                                   | Temporal Filtering   | Yes |
+| FFT-based Resampling                               | Temporal Filtering   | Yes |
 | Wavelet                                            | Temporal Filtering   | Yes |
 | Short-Time Fourier Transform (STFT)                | Temporal Filtering   | No |
 |                                                    |                      |             |

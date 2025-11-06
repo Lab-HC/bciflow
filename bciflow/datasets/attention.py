@@ -118,6 +118,6 @@ def attention(
         'events': events,
         'ch_names': ch_names,
         'tmin': tmin,
-        'data_type': "epochs"
+        'data_type': "raw"
     }
     return dataset
