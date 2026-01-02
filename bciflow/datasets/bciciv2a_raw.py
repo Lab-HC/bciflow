@@ -4,12 +4,13 @@ import scipy
 import mne
 from typing import List, Dict, Any
 
-def bciciv2a(subject: int=1, 
-             labels: List[str] = ['left-hand', 'right-hand', "both-feet", "tongue"],
-             session_list: List[str] = ['T', 'E'],
-             EOG: bool = False,
-             path: str = 'data/BCICIV2a/',
-             verbose='ERROR') -> Dict[str, Any]:
+import matplotlib.pyplot as plt
+
+def bciciv2a_raw(subject: int=1,
+                 session_list: List[str] = ['T', 'E'],
+                 EOG: bool = False,
+                 path: str = 'data/BCICIV2a/',
+                 verbose='ERROR') -> Dict[str, Any]:
     """
     Description
     -----------
@@ -26,9 +27,6 @@ def bciciv2a(subject: int=1,
     ----------
         subject : int
             index of the subject to retrieve the data from
-        labels : list
-            list of event names to be considered. 
-            It should be a sublist of ['left-hand','right-hand','both-feet','tongue'].
         session_list : list
             list of session identifiers to be considered. 
             It should be a sublist of ['T','E'].
@@ -44,12 +42,10 @@ def bciciv2a(subject: int=1,
     dict
         A dictionary containing the following keys:
 
-        - data_type: Type of the data loaded. In this case, always "epochs".
         - X: EEG data array of shape (n_trials, n_channels, n_times).
         - y: Labels array of shape (n_trials,).
         - sfreq: Sampling frequency of the EEG data.
         - y_dict: Mapping of labels to integers.
-        - events: Dictionary describing event markers.
         - ch_names: List of channel names.
         - tmin: Start time of the EEG data.
 
@@ -57,8 +53,8 @@ def bciciv2a(subject: int=1,
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
-    >>> from bciflow.datasets import bciciv2a
-    >>> eeg_data = bciciv2a(subject=1)
+    >>> from bciflow.datasets import bciciv2a.raw
+    >>> eeg_data = bciciv2a.raw(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     '''
@@ -68,13 +64,7 @@ def bciciv2a(subject: int=1,
         raise ValueError("Has to be a int type value")
     if subject > 9 or subject < 1:
         raise ValueError("Has to be an existing subject")
-    
-    if type(labels) != list:
-        raise ValueError("labels has to be a list type value")
-    for i in labels:
-        if i not in ['left-hand','right-hand','both-feet','tongue']:
-            raise ValueError("labels has to be a sublist of ['left-hand','right-hand','both-feet','tongue'],")
-        
+
     if type(session_list) != list:
         raise ValueError("session_list has to be a list type value")
     for i in session_list:
@@ -101,58 +91,72 @@ def bciciv2a(subject: int=1,
         ch_names += ['EOG-left', 'EOG-central', 'EOG-right']
     ch_names = np.array(ch_names)
 
-    events = {'get_start': [0, 2],
-            'beep_sound': [0],
-            'cue': [2, 3.25],
-            'task_exec': [3, 6],
-            'break': [6, 7.5]}
-
-    rawData, rawLabels = [], []
+    raw_data, raw_labels = [], []
     for sec in session_list:
         raw=mne.io.read_raw_gdf(path+'/A%02d%s.gdf'%(subject, sec), preload=True, verbose=verbose)
-        raw_data = raw.get_data()[:len(ch_names)]
+        raw_labels_ = np.array(scipy.io.loadmat(path+'/A%02d%s.mat'%(subject, sec))['classlabel']).reshape(-1)
+        raw_data_ = raw.get_data()[:len(ch_names)]
         annotations = raw.annotations.to_data_frame()
         first_timestamp = pd.to_datetime(annotations['onset'].iloc[0])
         annotations['onset'] = (pd.to_datetime(annotations['onset']) - first_timestamp).dt.total_seconds()
         annotations['description'] = annotations['description'].astype(int)
-        new_trial_time = np.array(annotations[annotations['description']==768]['onset'])
 
         times_ = np.array(raw.times)
-        rawData_ = []
-        for trial_ in new_trial_time:
-            idx_ = np.where(times_ == trial_)[0][0]
-            rawData_.append(raw_data[:, idx_:idx_+1875])
-        rawData_ = np.array(rawData_)
-        rawLabels_ = np.array(scipy.io.loadmat(path+'/A%02d%s.mat'%(subject, sec))['classlabel']).reshape(-1)
+        y_labels = np.zeros(len(times_))
 
-        rawData.append(rawData_)
-        rawLabels.append(rawLabels_)
+        # idling eyes open
+        new_trial_time = np.array(annotations[annotations['description']==276]['onset'])
+        for i in range(len(new_trial_time)):
+            start_trial = new_trial_time[i]
+            y_labels[np.searchsorted(times_, start_trial):] = 11
 
-    X, y = np.concatenate(rawData), np.concatenate(rawLabels)
+        # idling eyes closed
+        new_trial_time = np.array(annotations[annotations['description']==277]['onset'])
+        for i in range(len(new_trial_time)):
+            start_trial = new_trial_time[i]
+            y_labels[np.searchsorted(times_, start_trial):] = 12
 
-    labels_dict = {1: 'left-hand', 2: 'right-hand',3:"both-feet",4:"tongue"}
-    y = np.array([labels_dict[i] for i in y])
-    selected_labels = np.isin(y, labels)
-    X, y = X[selected_labels], y[selected_labels]
-    y_dict = {labels[i]: i for i in range(len(labels))}
-    y = np.array([y_dict[i] for i in y])
+        # trials
+        new_trial_time = np.array(annotations[annotations['description']==768]['onset'])
+        for i in range(len(new_trial_time)):
+            start_trial = new_trial_time[i]
+            start_cue = start_trial + 2
+            start_imagery = start_trial + 3
+            start_break = start_trial + 6
+            end_break = start_trial + 7.5
+            start_trial_idx = np.searchsorted(times_, start_trial)
+            start_cue_idx = np.searchsorted(times_, start_cue)
+            start_imagery_idx = np.searchsorted(times_, start_imagery)
+            start_break_idx = np.searchsorted(times_, start_break)
 
-    return {'data_type': "epochs",
+            y_labels[start_trial_idx:start_cue_idx] = 1
+            y_labels[start_cue_idx:start_imagery_idx] = raw_labels_[i] + 1
+            y_labels[start_imagery_idx:start_break_idx] = raw_labels_[i] + 5
+            y_labels[start_break_idx:] = 10
+
+        raw_data.append(raw_data_)
+        raw_labels.append(y_labels)
+
+    X, y = np.concatenate(raw_data, axis=1), np.concatenate(raw_labels)
+
+    y_dict = {1:"fixation-cross", 2:"left-cue", 3:"right-cue", 4:"both-feet-cue", 5:"tongue-cue", 
+              6:"left-imagery", 7:"right-imagery", 8:"both-feet-imagery", 9:"tongue-imagery", 10:"break",
+             11:"idling-eyes-open", 12:"idling-eyes-closed"}
+
+    return {'data_type': "raw",
             'X': X, 
             'y': y, 
             'sfreq': sfreq, 
-            'y_dict': y_dict,
-            'events': events, 
+            'y_dict': y_dict, 
             'ch_names': ch_names,
             'tmin': tmin}
 
 if __name__ == "__main__":
-    data = bciciv2a(subject=1, session_list=['T', 'E'], labels=['left-hand', 'right-hand'], EOG=False, path='../data/BCICIV2a/')
+    data = bciciv2a_raw(subject=1, session_list=['T', 'E'], EOG=False, path='../data/BCICIV2a/')
     print(data['data_type'])
     print(data['X'].shape)
     print(data['y'].shape)
     print(data['sfreq'])
     print(data['y_dict'])
-    print(data['events'])
     print(data['ch_names'])
     print(data['tmin'])
