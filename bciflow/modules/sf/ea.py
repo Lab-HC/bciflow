@@ -24,8 +24,7 @@ class ea:
     '''
     def __init__(self):   
         self.target_transformation = None
-        self.source_transformation = []
-
+        
     def calc_r(self, data):
         ''' 
         Computes the reference matrix for each frequency band.
@@ -97,7 +96,7 @@ class ea:
             return False
         return np.all(np.abs(matrix - np.diag(np.diag(matrix))) < epsilon)
     
-    def fit(self, eegdata, source):
+    def fit(self, eegdata):
         ''' 
         Fits the EA method to the input data, calculating the transformation matrices.
         
@@ -113,13 +112,9 @@ class ea:
         '''
         data = eegdata['X'].copy()
         self.target_transformation = self.full_r(data)
-        if source is not None:
-            for i in range(len(source)):
-                data = source[i]['X'].copy()
-                self.source_transformation.append(self.full_r(data))
         return self
 
-    def transform(self, eegdata, source = None):
+    def transform(self, eegdata):
         ''' 
         This method aligns the target subject's data by multiplying it
         by the reference matrix for each band.
@@ -140,21 +135,9 @@ class ea:
                 X[trial][band] = np.dot(self.target_transformation[band], X[trial][band])
         eegdata['X'] = X
 
-        if source is not None:
-            for i in range(len(source)):
-                X = source[i]['X'].copy()
-                for band in range(X.shape[1]):
-                    for trial in range(X.shape[0]):
-                        X[trial][band] = np.dot(self.source_transformation[i][band], X[trial][band])
-                source[i]['X'] = X
-            
-            combined = eegdata.copy()
-            combined['X'] = np.concatenate([s['X'] for s in source], axis=0)
-            combined['y'] = np.concatenate([s['y'] for s in source], axis=0)
-            eegdata = combined
         return eegdata
 
-    def fit_transform(self, eegdata, source):
+    def fit_transform(self, eegdata):
         ''' 
         Combines fitting and transforming into a single step.
 
@@ -169,4 +152,4 @@ class ea:
             The transformed data.
             
         '''
-        return self.fit(eegdata, source).transform(eegdata, source)
+        return self.fit(eegdata).transform(eegdata)
