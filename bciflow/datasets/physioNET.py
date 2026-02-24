@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 
-def string_to_number(label : str, run) -> int:
+def _string_to_number(label : str, run) -> int:
 
     first_case = [3, 4, 7, 8, 11, 12] # Left hand and Right hand
     #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
@@ -102,7 +102,7 @@ def physio_net(subject : int = 1,
         annotations = eventFile.annotations
 
         description = annotations.description.tolist()
-        description = [string_to_number(label, i) for label in description]
+        description = [_string_to_number(label, i) for label in description]
         Y.extend(description)
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
@@ -118,7 +118,7 @@ def physio_net(subject : int = 1,
 
             X[i-1 * 30 + session_idx, 0, :, 0:672] = session
             
-        if i == 1:
+        if i == 3:
             for header in signals_header:
                 newValue = header['label'].replace('.', '')
                 ch_names.append(newValue)
@@ -156,3 +156,14 @@ def physio_net(subject : int = 1,
     }
 
     return eegdata
+
+if __name__ == "__main__":
+    data = physio_net(subject=1, path='../../data/PhysioNET/')
+    print(data['data_type'])
+    print(data['X'].shape)
+    print(data['y'])
+    print(data['y_dict'])
+    print(data['events'])
+    print(data['ch_names'])
+    print(data['sfreq'])
+    print(data['tmin'])
