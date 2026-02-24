@@ -12,12 +12,12 @@ def string_to_number(label : str, run) -> int:
     #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
 
     mapping1 = {
-        'T0': 0, # descanso
+        'T0': 0, # Rest
         'T1': 1, # Left hand
         'T2': 2 # Right hand 
     }
     mapping = {
-        'T0': 0, # descanso
+        'T0': 0, # Rest
         'T1': 3, # Both hands
         'T2': 4, # Both feet
     }
@@ -136,14 +136,23 @@ def physio_net(subject : int = 1,
         3: 'Both-hands',
         4: 'Both-feet'
     }
+
+    events = {
+        'get-start': [0, 0],
+        'beep-sound': [0],
+        'cue': [0, 4],
+        'task_exec': [0, 4]
+    }
     
     eegdata : Dict[str, Any] = {
         'X': X,
         'y': Y,
         'y_dict': y_dict,
+        'events': events,
         'ch_names': ch_names,
         'sfreq': 160.,
         'tmin': 0.,
+        'data_type': 'epochs'
     }
 
     return eegdata
