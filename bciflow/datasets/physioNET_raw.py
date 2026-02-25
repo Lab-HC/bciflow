@@ -5,19 +5,18 @@ import mne
 import pandas as pd
 import numpy as np
 
-
-def string_to_number(label : str, run) -> int:
+def _string_to_number(label : str, run) -> int:
 
     first_case = [3, 4, 7, 8, 11, 12] # Left hand and Right hand
-    second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
+    #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
 
     mapping1 = {
-        'T0': 0, # descanso
+        'T0': 0, # Rest
         'T1': 1, # Left hand
         'T2': 2 # Right hand 
     }
     mapping = {
-        'T0': 0, # descanso
+        'T0': 0, # Rest
         'T1': 3, # Both hands
         'T2': 4, # Both feet
     }
@@ -25,7 +24,6 @@ def string_to_number(label : str, run) -> int:
         mapping = mapping1
     
     return mapping.get(label, -1)  # Retorna -1 se o rótulo não for encontrado
-
 
 def physio_net(subject : int = 1,
                 session_list : Optional[List[str]] = None,
@@ -57,22 +55,20 @@ def physio_net(subject : int = 1,
     -------
     dict
         A dictionary containing the following keys:
-        - X: EEG data as a numpy array [trials, 1, channels, time].
-        - y: Labels corresponding to the EEG data.
+        - X: EEG data array of shape (n_trials, n_channels, n_times).
+        - y: Labels array of shape (n_trials,).
         - sfreq: Sampling frequency of the EEG data.
         - y_dict: Mapping of labels to integers.
-        - events: Dictionary describing event markers.
         - ch_names: List of channel names.
         - tmin: Start time of the EEG data.
-        - data_type: Type of the data ('epochs'). TODO: O que é?
         
     Examples
     --------
     Load EEG data for subject 1, all sessions and default labels:
     >>> from bciflow.datasets import physio_net
     >>> eegdata = physio_net(subject=1)
-    >>> print(eegdata['X'].shape)  # (trials, 1, channels, time)
-    >>> print(eegdata['y'])  # Labels    
+    >>> print(eegdata['X'].shape)  # (channels, time)
+    >>> print(eegdata['ch_names'])  # Channel names
     '''
     """
 
@@ -91,13 +87,11 @@ def physio_net(subject : int = 1,
     if path[-1] != '/':
         path += '/'
 
-    X = np.empty((360, 1, 64, 672))  # (trials, bands, channels, time) # Deve ser em torno de (390, 1, 64, 672)
-    Y = [] # Labels
-
-    X = np.empty((64, 672 * 12 * 30 - 672)) # (channels, time) # Deve ser em torno de (64, 672 * 12 * 30)
-
-
+    # Aqui, sessions é 12 * 30 para que o Y ainda esteja de acordo
+    X = np.empty((12 * 30, 64, 672)) # (sessions, channels, time) 
+    Y = []
     ch_names = []
+    
     for i in range(3, 15):
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
         
@@ -106,7 +100,7 @@ def physio_net(subject : int = 1,
         annotations = eventFile.annotations
 
         description = annotations.description.tolist()
-        description = [string_to_number(label, i) for label in description]
+        description = [_string_to_number(label, i) for label in description]
         Y.extend(description)
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
@@ -114,35 +108,44 @@ def physio_net(subject : int = 1,
         for session_idx in range(len(annotations.onset) - 1):
             start_time_hz = int(annotations.onset[session_idx] * 160)
             end_time_hz = int(annotations.onset[session_idx + 1] * 160)
-            start_index = (i - 3) * 30 * 672
 
             session = signals[:, start_time_hz:end_time_hz]
             if session.shape[1] < 672:
                 padding = 672 - session.shape[1]
                 session = np.pad(session, ((0, 0), (0, padding)), mode='constant')
 
-            X[:, start_index + session_idx*672 : (start_index + (session_idx+1)*672)] = session
+            X[i-1 * 30 + session_idx, :, :] = session
             
         if i == 1:
             for header in signals_header:
                 newValue = header['label'].replace('.', '')
                 ch_names.append(newValue)
-
-    y_dict = {
-        0: 'Rest',
-        1: 'Left-hand',
-        2: 'Right-hand',
-        3: 'Both-hands',
-        4: 'Both-feet'
-    }
     
     eegdata : Dict[str, Any] = {
         'X': X,
         'y': Y,
-        'y_dict': y_dict,
+        'y_dict': {
+            0: 'Rest',
+            1: 'Left-hand',
+            2: 'Right-hand',
+            3: 'Both-hands',
+            4: 'Both-feet'
+        },
         'ch_names': ch_names,
         'sfreq': 160.,
         'tmin': 0.,
+        'data_type': 'raw'
     }
 
     return eegdata
+
+if __name__ == "__main__":
+    data = physio_net(subject=1, path='../../data/PhysioNET/')
+    print(data['data_type'])
+    print(data['X'].shape)
+    print(data['y'])
+    print(len(data['y']))
+    print(data['y_dict'])
+    print(data['ch_names'])
+    print(data['sfreq'])
+    print(data['tmin'])

@@ -6,18 +6,18 @@ import pandas as pd
 import numpy as np
 
 
-def string_to_number(label : str, run) -> int:
+def _string_to_number(label : str, run) -> int:
 
     first_case = [3, 4, 7, 8, 11, 12] # Left hand and Right hand
     #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
 
     mapping1 = {
-        'T0': 0, # descanso
+        'T0': 0, # Rest
         'T1': 1, # Left hand
         'T2': 2 # Right hand 
     }
     mapping = {
-        'T0': 0, # descanso
+        'T0': 0, # Rest
         'T1': 3, # Both hands
         'T2': 4, # Both feet
     }
@@ -102,7 +102,7 @@ def physio_net(subject : int = 1,
         annotations = eventFile.annotations
 
         description = annotations.description.tolist()
-        description = [string_to_number(label, i) for label in description]
+        description = [_string_to_number(label, i) for label in description]
         Y.extend(description)
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
@@ -118,7 +118,7 @@ def physio_net(subject : int = 1,
 
             X[i-1 * 30 + session_idx, 0, :, 0:672] = session
             
-        if i == 1:
+        if i == 3:
             for header in signals_header:
                 newValue = header['label'].replace('.', '')
                 ch_names.append(newValue)
@@ -136,14 +136,34 @@ def physio_net(subject : int = 1,
         3: 'Both-hands',
         4: 'Both-feet'
     }
+
+    events = {
+        'get-start': [0, 0],
+        'beep-sound': [0],
+        'cue': [0, 4],
+        'task_exec': [0, 4]
+    }
     
     eegdata : Dict[str, Any] = {
         'X': X,
         'y': Y,
         'y_dict': y_dict,
+        'events': events,
         'ch_names': ch_names,
         'sfreq': 160.,
         'tmin': 0.,
+        'data_type': 'epochs'
     }
 
     return eegdata
+
+if __name__ == "__main__":
+    data = physio_net(subject=1, path='../../data/PhysioNET/')
+    print(data['data_type'])
+    print(data['X'].shape)
+    print(data['y'])
+    print(data['y_dict'])
+    print(data['events'])
+    print(data['ch_names'])
+    print(data['sfreq'])
+    print(data['tmin'])
