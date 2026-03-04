@@ -12,7 +12,7 @@ Function
 import numpy as np
 from scipy.signal import resample
 
-def fft_resample(eegdata, new_sfreq):
+def fft_resample(eegdata, new_sfreq, inplace=False):
     '''
     Parameters
     ----------
@@ -27,6 +27,8 @@ def fft_resample(eegdata, new_sfreq):
     dict
         The same dictionary passed in parameters, but with the resampled data stored under the key 'X' and the new sampling frequency under the key 'sfreq'.
     '''
+    if not inplace:
+        eegdata = eegdata.copy()
     X = eegdata['X'].copy()
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
     sfreq = eegdata['sfreq']

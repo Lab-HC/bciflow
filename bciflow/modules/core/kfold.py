@@ -209,7 +209,20 @@ def classification_kfold(target: Dict[str, Any],
         pre_folding = {}
 
    
+
     
+    # =========================
+    # Crop
+    # =========================
+
+    for tmin_ in start_test_window:
+        target_dict[tmin_] = util.crop(
+            data=target,
+            tmin=tmin_,
+            window_size=window_size,
+            inplace=False
+        )
+
     target_dict = apply_prefold(
         target=target,
         start_window=start_window,
