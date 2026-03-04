@@ -11,7 +11,7 @@ Function
 import numpy as np
 from scipy.signal import cheby2, filtfilt
 
-def chebyshevII(eegdata, low_cut=4, high_cut=40, btype='bandpass', order=4, rs='auto'):
+def chebyshevII(eegdata, low_cut=4, high_cut=40, btype='bandpass', order=4, rs='auto', inplace=False):
     '''
     Parameters
     ----------
@@ -42,6 +42,9 @@ def chebyshevII(eegdata, low_cut=4, high_cut=40, btype='bandpass', order=4, rs='
             rs = 40
         else:
             rs = 20
+            
+    if not inplace:
+        eegdata = eegdata.copy()
 
     X = eegdata['X'].copy()
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))

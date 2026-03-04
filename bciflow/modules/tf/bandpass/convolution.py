@@ -10,7 +10,7 @@ Function
 '''
 import numpy as np
 
-def bandpass_conv(eegdata, low_cut=4, high_cut=40, transition=None, window_type='hamming', kind='same'):
+def bandpass_conv(eegdata, low_cut=4, high_cut=40, transition=None, window_type='hamming', kind='same', inplace=False):
     '''
     Parameters
     ----------
@@ -33,6 +33,10 @@ def bandpass_conv(eegdata, low_cut=4, high_cut=40, transition=None, window_type=
     output : dict
         The original dictionary with the filtered data stored under the key 'X'.
     '''
+
+    if not inplace:
+        eegdata = eegdata.copy()
+
     X = eegdata['X'].copy()
     sfreq = eegdata['sfreq']
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))

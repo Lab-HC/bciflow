@@ -6,7 +6,7 @@ from typing import List, Optional, Dict, Any
 
 def bciciv2b_raw(subject: int=1, 
              session_list: Optional[List[str]] = None, 
-             path: str = 'D:/Arquivos/BCI/BCI/tarefas/2b') -> Dict[str, Any]:
+             path: str = 'data/BCICIV2b/') -> Dict[str, Any]:
     """
     Description
     -----------
@@ -173,3 +173,13 @@ def bciciv2b_raw(subject: int=1,
         'ch_names': ch_names,
         'tmin': tmin
     }
+
+if __name__ == "__main__":
+    data = bciciv2b_raw(subject=1, path='C:/Users/Hychiro/Documents/Ufjf/bci/testes no codigo do bciflow/Data/BCICIV2b')
+    print(data['data_type'])
+    print(data['X'].shape)
+    print(data['y'].shape)
+    print(data['sfreq'])
+    print(data['y_dict'])
+    print(data['ch_names'])
+    print(data['tmin'])

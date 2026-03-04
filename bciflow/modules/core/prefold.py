@@ -10,6 +10,7 @@ def apply_prefold(target: Dict[str, Any],
                   start_test_window: Optional[float or list],
                   window_size: float,
                   pre_folding: Dict[str, tuple],
+                  inplace: bool = False
                   ) -> Dict[float, Dict[str, Any]]:
     '''
     This method performs the pre-fold operations before the stratified
@@ -63,7 +64,7 @@ def apply_prefold(target: Dict[str, Any],
     target_dict : dict
         Dictionary where:
         - Keys correspond to each tmin value in start_test_window.
-        - Values are cropped and preprocessed EEG dictionaries.
+        - Values are dictionaries containing the preprocessed EEG data for each test window.
 
     Raises
     ------
@@ -139,8 +140,8 @@ def apply_prefold(target: Dict[str, Any],
             if type(value) != tuple or len(value) != 2:
                 raise ValueError("Each pre_folding entry must be a tuple (function, params_dict)")
 
-            if not callable(value[0]):
-                raise ValueError(f"Pre-folding function '{name}' is not callable")
+            if not callable(value[0]) and not hasattr(value[0], 'transform'):
+                raise ValueError(f"Pre-folding step '{name}' must be callable or implement transform()")
 
             if type(value[1]) != dict:
                 raise ValueError(f"Parameters of pre-folding '{name}' must be a dict")
@@ -156,37 +157,25 @@ def apply_prefold(target: Dict[str, Any],
 
     target_dict = {}
 
-    
-
-    # Crop
-    for tmin_ in start_test_window:
-        target_dict[tmin_] = util.crop(
-            data=target,
-            tmin=tmin_,
-            window_size=window_size,
-            inplace=False
-        )
-
-
-    #TL and DA here <---
-
     # Apply preprocessing
     for tmin_ in start_test_window:
+        target_dict[tmin_] = target.copy()
         for name, pre_func in pre_folding.items():
             
             if inspect.isfunction(pre_func[0]):
                 target_dict[tmin_] = util.apply_to_trials(
-                    data=target_dict[tmin_],
+                    data=target,
                     func=pre_func[0],
                     func_param=pre_func[1],
-                    inplace=False
+                    inplace=inplace
                 )
                 
             else:
                 target_dict[tmin_] = util.apply_to_trials(
-                    data=target_dict[tmin_],
+                    data=target,
                     func=pre_func[0].transform,
                     func_param=pre_func[1],
-                    inplace=False
+                    inplace=inplace
                 )
+
     return target_dict
