@@ -55,7 +55,7 @@ def cbcic_raw(subject: int = 1,
     Load EEG data for subject 1, all sessions, and default labels:
 
     >>> from bciflow.datasets import cbcic.raw
-    >>> eeg_data = cbcic(subject=1)
+    >>> eeg_data = cbcic.raw(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     '''
