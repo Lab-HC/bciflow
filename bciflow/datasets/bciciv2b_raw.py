@@ -50,8 +50,8 @@ def bciciv2b_raw(subject: int=1,
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
-    >>> from bciflow.datasets import bciciv2b.raw
-    >>> eeg_data = bciciv2b.raw(subject=1)
+    >>> from bciflow.datasets import bciciv2b_raw
+    >>> eeg_data = bciciv2b_raw(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     '''

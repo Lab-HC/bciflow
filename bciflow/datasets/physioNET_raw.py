@@ -25,7 +25,7 @@ def _string_to_number(label : str, run) -> int:
     
     return mapping.get(label, -1)  # Retorna -1 se o rótulo não for encontrado
 
-def physio_net(subject : int = 1,
+def physionet_raw(subject : int = 1,
                 session_list : Optional[List[str]] = None,
                 labels : List[str] = ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],
                 path : str = 'data/PhysioNET/') -> Dict[str, Any]: 
@@ -65,8 +65,8 @@ def physio_net(subject : int = 1,
     Examples
     --------
     Load EEG data for subject 1, all sessions and default labels:
-    >>> from bciflow.datasets import physio_net
-    >>> eegdata = physio_net(subject=1)
+    >>> from bciflow.datasets import physionet_raw
+    >>> eegdata = physionet_raw(subject=1)
     >>> print(eegdata['X'].shape)  # (channels, time)
     >>> print(eegdata['ch_names'])  # Channel names
     '''
@@ -140,7 +140,7 @@ def physio_net(subject : int = 1,
     return eegdata
 
 if __name__ == "__main__":
-    data = physio_net(subject=1, path='../../data/PhysioNET/')
+    data = physionet_raw(subject=1, path='../../data/PhysioNET/')
     print(data['data_type'])
     print(data['X'].shape)
     print(data['y'])

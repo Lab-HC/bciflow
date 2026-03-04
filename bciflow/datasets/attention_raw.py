@@ -41,8 +41,8 @@ def attention_raw(
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
-    >>> from bciflow.datasets import attention.raw
-    >>> eeg_data = attention.raw(subject=1)
+    >>> from bciflow.datasets import attention_raw
+    >>> eeg_data = attention_raw(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     '''
