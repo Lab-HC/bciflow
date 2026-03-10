@@ -1,5 +1,5 @@
 
-from bciflow.datasets.cbcic import cbcic
+from bciflow.datasets import cbcic
 from bciflow.modules.core.kfold import classification_kfold
 from bciflow.modules.tf.bandpass.chebyshevII import chebyshevII
 from bciflow.modules.fe import logpower

@@ -11,7 +11,7 @@ Function
 import numpy as np
 import pywt
 
-def wavelet(eegdata, levels=5):
+def wavelet(eegdata, levels=5, inplace=False):
     '''
     Parameters
     ----------
@@ -25,6 +25,8 @@ def wavelet(eegdata, levels=5):
     dict
         The same dictionary passed in parameters, but with the transformed data stored under the key 'X'.
     '''
+    if not inplace:
+        eegdata = eegdata.copy()
     X = eegdata['X'].copy()
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
 

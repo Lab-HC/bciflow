@@ -11,7 +11,7 @@ Function
 import numpy as np
 from scipy.interpolate import CubicSpline
 
-def cubic_resample(eegdata, new_sfreq):
+def cubic_resample(eegdata, new_sfreq,inplace=False):
     '''
     Parameters
     ----------
@@ -26,6 +26,8 @@ def cubic_resample(eegdata, new_sfreq):
     dict
         The same dictionary passed in parameters, but with the resampled data stored under the key 'X' and the new sampling frequency under the key 'sfreq'.
     '''
+    if not inplace:
+        eegdata = eegdata.copy()
     X = eegdata['X'].copy()
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
     sfreq = eegdata['sfreq']
