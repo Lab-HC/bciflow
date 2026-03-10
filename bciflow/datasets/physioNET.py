@@ -47,7 +47,7 @@ def physio_net(subject : int = 1,
         subject : int
             Index of the subject to load.
         session_list : list, optional
-            List of session codes
+            List of session numbers to load (e.g., [3, 4, 5] for sessions 3, 4, and 5). If None, sessions (3-14) are loaded.
         labels : dict
             Dictionary mapping event names to event codes
         path : str
@@ -88,13 +88,20 @@ def physio_net(subject : int = 1,
             raise ValueError("labels has to be a sublist of ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],")
     if type(session_list) != list and session_list != None:
         raise ValueError("Has to be an List or None type")
+    if session_list == None:
+        session_list = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    else:
+        for i in session_list:
+            if i >= 1 and i <= 14:
+                raise ValueError("Session list has to be a sublist of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],")
+    
     if path[-1] != '/':
         path += '/'
 
     X = np.empty((360, 1, 64, 672))
     Y = [] 
     ch_names = []
-    for i in range(3, 15):
+    for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
         
         eventFile = mne.io.read_raw_edf(newPath)

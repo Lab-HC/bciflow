@@ -45,7 +45,7 @@ def physio_net(subject : int = 1,
         subject : int
             Index of the subject to load.
         session_list : list, optional
-            List of session codes
+            List of session numbers to load (e.g., [3, 4, 5] for sessions 3, 4, and 5). If None, sessions (3-14) are loaded.
         labels : dict
             Dictionary mapping event names to event codes
         path : str
@@ -84,15 +84,23 @@ def physio_net(subject : int = 1,
             raise ValueError("labels has to be a sublist of ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],")
     if type(session_list) != list and session_list != None:
         raise ValueError("Has to be an List or None type")
+    if session_list == None:
+        session_list = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    else:
+        for i in session_list:
+            if i >= 1 and i <= 14:
+                raise ValueError("Session list has to be a sublist of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],")
     if path[-1] != '/':
         path += '/'
 
     # Aqui, sessions é 12 * 30 para que o Y ainda esteja de acordo
-    X = np.empty((12 * 30, 64, 672)) # (sessions, channels, time) 
+    X = np.empty((64, 672 * len(session_list) * 30)) # (sessions, channels, time) 
     Y = []
     ch_names = []
     
-    for i in range(3, 15):
+    min_session_list = min(session_list)
+
+    for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
         
         eventFile = mne.io.read_raw_edf(newPath)
@@ -114,9 +122,9 @@ def physio_net(subject : int = 1,
                 padding = 672 - session.shape[1]
                 session = np.pad(session, ((0, 0), (0, padding)), mode='constant')
 
-            X[i-1 * 30 + session_idx, :, :] = session
+            X[:, (i-min_session_list) + session_idx * 672] = session
             
-        if i == 1:
+        if i == min_session_list:
             for header in signals_header:
                 newValue = header['label'].replace('.', '')
                 ch_names.append(newValue)
