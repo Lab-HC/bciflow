@@ -94,11 +94,21 @@ def physionet_raw(subject : int = 1,
         path += '/'
 
     # Aqui, sessions é 12 * 30 para que o Y ainda esteja de acordo
-    X = np.empty((64, 672 * len(session_list) * 30)) # (sessions, channels, time) 
+
+    x_length = 2000 * len(session_list) # 2000 ticks por sessão, exceto a 1 e 2.
+    if 1 in session_list:
+        x_length += 9760 - 2000 # Remove os 2000 padrão e adiciona os 9760
+    
+    if 2 in session_list:
+        x_length += 9760 - 2000
+
+
+    X = np.empty((64, x_length)) # (sessions, channels, time) 
     Y = []
     ch_names = []
     
     min_session_list = min(session_list)
+    start_index = 0
 
     for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
@@ -113,16 +123,8 @@ def physionet_raw(subject : int = 1,
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
 
-        for session_idx in range(len(annotations.onset) - 1):
-            start_time_hz = int(annotations.onset[session_idx] * 160)
-            end_time_hz = int(annotations.onset[session_idx + 1] * 160)
-
-            session = signals[:, start_time_hz:end_time_hz]
-            if session.shape[1] < 672:
-                padding = 672 - session.shape[1]
-                session = np.pad(session, ((0, 0), (0, padding)), mode='constant')
-
-            X[:, (i-min_session_list) + session_idx * 672] = session
+        X[:, start_index:start_index + signals.shape[1]] = signals
+        start_index += signals.shape[1]
             
         if i == min_session_list:
             for header in signals_header:
