@@ -30,7 +30,8 @@ def _string_to_number(label : str, run) -> int:
 def physio_net(subject : int = 1,
                 session_list : Optional[List[str]] = None,
                 labels : List[str] = ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],
-                path : str = 'data/PhysioNET/') -> Dict[str, Any]: 
+                path : str = 'data/PhysioNET/', 
+                verbose:str ='ERROR') -> Dict[str, Any]: 
     """
     '''
     Description
@@ -92,12 +93,22 @@ def physio_net(subject : int = 1,
         session_list = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
     else:
         for i in session_list:
-            if i >= 1 and i <= 14:
+            if type(i) != int or (i >= 1 and i <= 14):
                 raise ValueError("Session list has to be a sublist of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],")
     
+    if type(path) != str:
+        raise ValueError("Has to be a string type value")
     if path[-1] != '/':
         path += '/'
+    
+    if type(verbose) != str:
+        raise ValueError("Has to be a string type value")
+    if verbose not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+        raise ValueError("verbose has to be one of the following: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'")
 
+    # Pra aplicar a session 1 e 2, eu precisaria fazer:
+    # X = np.empty((360, 1, 64, 9760)) # (sessions, 1, channels, time)
+    # Pq session 1 e 2 tem 9760 ticks. E mesmo que eu junte os 30 records de cada sessão, a soma é 2000 ticks
     X = np.empty((360, 1, 64, 672))
     Y = [] 
     ch_names = []
