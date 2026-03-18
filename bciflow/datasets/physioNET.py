@@ -8,28 +8,47 @@ import numpy as np
 
 def _string_to_number(label : str, run) -> int:
 
-    first_case = [3, 4, 7, 8, 11, 12] # Left hand and Right hand
-    #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
+    #real_left_right = [3, 7, 11] # Left hand and Right hand
+    real_both = [5, 9, 13] # Both hands and Both feet
+    imagine_left_right = [4, 8, 12]
+    imagine_both = [6, 10, 14]
 
-    mapping1 = {
+    mapping_real_left_right = {
         'T0': 0, # Rest
         'T1': 1, # Left hand
         'T2': 2 # Right hand 
     }
-    mapping = {
+    mapping_real = {
         'T0': 0, # Rest
         'T1': 3, # Both hands
         'T2': 4, # Both feet
     }
-    if run in first_case:
-        mapping = mapping1
+    mapping_imagine_left_right = {
+        'T0': 0, # Rest
+        'T1': 5, # Imagine left hand
+        'T2': 6 # Imagine right hand
+    }
+    mapping_imagine_both = {
+        'T0': 0, # Rest
+        'T1': 7, # Imagine both hands
+        'T2': 8 # Imagine both feet
+    }
     
+    mapping = mapping_real_left_right
+
+    if run in real_both:
+        mapping = mapping_real
+    elif run in imagine_left_right:
+        mapping = mapping_imagine_left_right
+    elif run in imagine_both:
+        mapping = mapping_imagine_both
+
     return mapping.get(label, -1)  # Retorna -1 se o rótulo não for encontrado
 
 
 def physio_net(subject : int = 1,
                 session_list : Optional[List[str]] = None,
-                labels : List[str] = ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],
+                labels : List[str] = ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet', 'imagine-left-hand', 'imagine-right-hand', 'imagine-both-hands', 'imagine-both-feet'],
                 path : str = 'data/PhysioNET/', 
                 verbose:str ='ERROR') -> Dict[str, Any]: 
     """
@@ -85,8 +104,8 @@ def physio_net(subject : int = 1,
     if type(labels) != list:
         raise ValueError("Labels must be provided as a list.")
     for i in labels:
-        if i not in ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet']:
-            raise ValueError("labels has to be a sublist of ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],")
+        if i not in ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet', 'imagine-left-hand', 'imagine-right-hand', 'imagine-both-hands', 'imagine-both-feet']:
+            raise ValueError("labels has to be a sublist of ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet', 'imagine-left-hand', 'imagine-right-hand', 'imagine-both-hands', 'imagine-both-feet'],")
     if type(session_list) != list and session_list != None:
         raise ValueError("Has to be an List or None type")
     if session_list == None:
@@ -109,9 +128,12 @@ def physio_net(subject : int = 1,
     # Pra aplicar a session 1 e 2, eu precisaria fazer:
     # X = np.empty((360, 1, 64, 9760)) # (sessions, 1, channels, time)
     # Pq session 1 e 2 tem 9760 ticks. E mesmo que eu junte os 30 records de cada sessão, a soma é 2000 ticks
-    X = np.empty((360, 1, 64, 672))
+    X_og = np.empty((360, 1, 64, 9760))
+    X = np.empty((360, 1, 64, 640))
     Y = [] 
     ch_names = []
+    min_index = min(session_list)
+
     for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
         
@@ -125,20 +147,18 @@ def physio_net(subject : int = 1,
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
 
+        #annot = plib.highlevel.read_edf_header(newPath)['annotations']
+
         for session_idx in range(len(annotations.onset) - 1):
             start_time_hz = int(annotations.onset[session_idx] * 160)
-            end_time_hz = int(annotations.onset[session_idx + 1] * 160)
+            end_time_hz = int((annotations.onset[session_idx] + 4.0) * 160)
 
             session = signals[:, start_time_hz:end_time_hz]
-            if session.shape[1] < 672:
-                padding = 672 - session.shape[1]
-                session = np.pad(session, ((0, 0), (0, padding)), mode='constant')
-
-            X[i-1 * 30 + session_idx, 0, :, 0:672] = session
+            X[(i-min_index) * 30 + session_idx, 0, :, 0:640] = session
             
-        if i == 3:
-            for header in signals_header:
-                newValue = header['label'].replace('.', '')
+        if i == min_index:
+            for h in signals_header:
+                newValue = h['label'].replace('.', '')
                 ch_names.append(newValue)
 
 
@@ -148,11 +168,15 @@ def physio_net(subject : int = 1,
             X = np.delete(X, i, axis=0)
 
     y_dict = {
-        0: 'Rest',
-        1: 'Left-hand',
-        2: 'Right-hand',
-        3: 'Both-hands',
-        4: 'Both-feet'
+        0: 'rest',
+        1: 'left-hand',
+        2: 'right-hand',
+        3: 'both-hands',
+        4: 'both-feet',
+        5: 'imagine-left-hand',
+        6: 'imagine-right-hand',
+        7: 'imagine-both-hands',
+        8: 'imagine-both-feet'
     }
 
     events = {
