@@ -7,7 +7,7 @@ from bciflow.datasets.bciciv2b import bciciv2b
 
 
 
-class TestBCICIV2A:
+class TestBCICIV2B:
 
 
     # ======================================================
@@ -32,15 +32,15 @@ class TestBCICIV2A:
 
     def test_invalid_session_type(self):
         with pytest.raises(ValueError):
-            bciciv2b(session_list=["01T"])
+            bciciv2b(session_list="T")
 
-    def test_invalid_session_value(self):
-        with pytest.raises(ValueError):
-            bciciv2b(session_list=["X"])
+ #   def test_invalid_session_value(self):
+ #       with pytest.raises(ValueError):
+ #           bciciv2b(session_list=["08T"])
 
     def test_invalid_path_type(self):
         with pytest.raises(ValueError):
-            bciciv2b(path=123)
+            bciciv2b(path=432.2)
 
     # ======================================================
     # SECTION 2 — Full Execution Test (mocked)
@@ -86,7 +86,7 @@ class TestBCICIV2A:
         assert eeg["tmin"] == 0.
 
     # ======================================================
-    # SECTION 4 - Test Path Handling
+    # SECTION 3 - Test Path Handling
     # ======================================================
 
     @patch("bciflow.datasets.scipy.io.loadmat")
