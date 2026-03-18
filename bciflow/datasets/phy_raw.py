@@ -112,19 +112,16 @@ def physionet_raw(subject : int = 1,
 
     for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
-        
-        eventFile = mne.io.read_raw_edf(newPath)
-
-        annotations = eventFile.annotations
-
-        description = annotations.description.tolist()
-        description = [_string_to_number(label, i) for label in description]
-        Y.extend(description)
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
 
+        annotations = header['annotations']
+
         X[:, start_index:start_index + signals.shape[1]] = signals
         start_index += signals.shape[1]
+
+        for j in range(30):
+            Y.append(_string_to_number(annotations[j][2], i))
             
         if i == min_session_list:
             for header in signals_header:

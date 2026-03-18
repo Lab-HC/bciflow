@@ -1,7 +1,6 @@
 import pyedflib as plib
 import matplotlib.pyplot as plt
 from typing import List, Dict, Any, Optional
-import mne
 import pandas as pd
 import numpy as np
 
@@ -137,21 +136,23 @@ def physio_net(subject : int = 1,
     for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
         
-        eventFile = mne.io.read_raw_edf(newPath)
+        #eventFile = mne.io.read_raw_edf(newPath)
 
-        annotations = eventFile.annotations
+        #annotations = eventFile.annotations
 
-        description = annotations.description.tolist()
-        description = [_string_to_number(label, i) for label in description]
-        Y.extend(description)
+        #description = annotations.description.tolist()
+        #description = [_string_to_number(label, i) for label in description]
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
+        annotations = header['annotations']
 
         #annot = plib.highlevel.read_edf_header(newPath)['annotations']
 
-        for session_idx in range(len(annotations.onset) - 1):
-            start_time_hz = int(annotations.onset[session_idx] * 160)
-            end_time_hz = int((annotations.onset[session_idx] + 4.0) * 160)
+        for session_idx in range(0, 30):
+            start_time_hz = int(annotations[session_idx][0] * 160)
+            end_time_hz = int((annotations[session_idx][0] + 4.0) * 160)
+
+            Y.append(_string_to_number(annotations[session_idx][2], i))
 
             session = signals[:, start_time_hz:end_time_hz]
             X[(i-min_index) * 30 + session_idx, 0, :, 0:640] = session

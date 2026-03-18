@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 from unittest.mock import patch, MagicMock
 
-from bciflow.datasets.physionet_raw import physio_net_raw
+from bciflow.datasets.phy_raw import physio_net_raw
 
 
 class TestPhysioNetRaw:
@@ -58,23 +58,35 @@ class TestPhysioNetRaw:
     # ======================================================
     # SECTION 2 — Full Execution Test (mocked)
     # ======================================================
-
-    @patch("bciflow.datasets.mne.io.read_raw_gdf")
-    def test_full_execution(self, mock_read_raw_edf):
-
+    @patch("bciflow.datasets.plib.highlevel.read_edf")
+    def test_full_execution(self, mock_read_edf):
         n_channels = 64
-        total_samples = 9760
+        total_samples = 20000
 
-        # fake raw
-        fake_data = np.random.randn(n_channels, total_samples)
-        mock_raw = MagicMock()
-        mock_raw.get_data.return_value = fake_data
-        mock_read_raw_edf.return_value = mock_raw
+        fake_data = np.random.randn(n_channels, total_samples) # plib highlevel read_edf
 
-        # Call the function with mocked data
-        result = physio_net_raw(subject=1, session_list=[3], labels=['rest'], path='fake_path/', verbose='INFO')
+        annotations_df = {
+            "onset": np.random.rand(30),
+            "duration": np.random.rand(30),
+            "description": np.random.choice(['T0', 'T1', 'T2'], 30)
+        }
 
-        # Assertions to check if the function behaves as expected with mocked data
-        assert 'X' in result and 'y' in result and 'ch_names' in result
-        assert result['X'].shape == (360, 1, 64, 640)  # Expected shape based on the code logic
-        assert len(result['y']) == 360  # Expected number of labels based on the code logic
+        fake_header = {
+            "annotations": annotations_df
+        }
+
+        fake_signal_header = []
+        for i in range(n_channels):
+            fake_signal_header.append({
+                "label": f"Ch{i+1}"
+            })
+
+        mock_read_edf.return_value = (fake_data, fake_signal_header, fake_header)
+
+        eeg = physio_net_raw(subject=1, session_list=[3])
+
+        assert eeg["data_type"] == "raw"
+        assert eeg["X"].shape == (64, 20000)
+        assert len(eeg["y"]) == 30
+        assert eeg["sfreq"] == 160.
+        assert eeg["tmin"] == 0.
