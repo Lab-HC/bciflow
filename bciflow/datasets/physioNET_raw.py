@@ -103,7 +103,7 @@ def physionet_raw(subject : int = 1,
         x_length += 9760 - 2000
 
 
-    X = np.empty((64, x_length)) # (sessions, channels, time) 
+    X = np.empty((64, x_length)) # (channels, time) 
     Y = []
     ch_names = []
     
