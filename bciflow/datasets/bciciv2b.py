@@ -105,7 +105,7 @@ def bciciv2b(subject: int=1,
         times_ = np.array(raw.times)
         rawData_ = []
         for trial_ in new_trial_time:
-            idx_ = np.where(times_ == trial_)[0][0]
+            idx_ = np.argmin(np.abs(times_ - trial_))
             rawData_.append(raw_data[:, idx_:idx_+2125])
         rawData_ = np.array(rawData_)
         rawLabels_ = np.array(scipy.io.loadmat(path+'B%02d%s.mat'%(subject, sec))['classlabel']).reshape(-1)

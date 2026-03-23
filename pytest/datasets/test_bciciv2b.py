@@ -5,7 +5,22 @@ from unittest.mock import patch, MagicMock
 
 from bciflow.datasets.bciciv2b import bciciv2b
 
-
+# ==========================================================
+# Test Suite: bciciv2a
+# ==========================================================
+#
+# Cobertura:
+#   1. Validação de tipos (subject, labels, session_list, path)
+#   2. Validação de valores permitidos (subject range, labels válidos, sessions válidas)
+#   3. Normalização automática do path (adição de '/')
+#   4. Branch EOG (inclusão de canais extras)
+#   5. Mock do carregamento externo (mne + scipy)
+#   6. Extração e segmentação de trials
+#   7. Concatenação de múltiplas sessões
+#   8. Mapeamento e filtragem de labels
+#   9. Estrutura e integridade do dicionário retornado
+#
+# ==========================================================
 
 class TestBCICIV2B:
 
@@ -34,9 +49,9 @@ class TestBCICIV2B:
         with pytest.raises(ValueError):
             bciciv2b(session_list="T")
 
- #   def test_invalid_session_value(self):
- #       with pytest.raises(ValueError):
- #           bciciv2b(session_list=["08T"])
+    def test_invalid_session_value(self):
+        with pytest.raises(ValueError):
+            bciciv2b(session_list=["08T"])
 
     def test_invalid_path_type(self):
         with pytest.raises(ValueError):
@@ -80,8 +95,8 @@ class TestBCICIV2B:
         eeg = bciciv2b(subject=1, session_list=None)
 
         assert eeg["data_type"] == "epochs"
-        assert eeg["X"].shape == (2, 1, n_channels, trial_size)
-        assert eeg["y"].shape == (2,)
+        assert eeg["X"].shape == (20, 1, n_channels, trial_size)
+        assert eeg["y"].shape == (20,)
         assert eeg["sfreq"] == 250.
         assert eeg["tmin"] == 0.
 
