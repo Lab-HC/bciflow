@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 from bciflow.datasets.bciciv2b import bciciv2b
 
 # ==========================================================
-# Test Suite: bciciv2a
+# Test Suite: bciciv2b
 # ==========================================================
 #
 # Cobertura:
