@@ -28,7 +28,8 @@ def _string_to_number(label : str, run) -> int:
 def physionet_raw(subject : int = 1,
                 session_list : Optional[List[str]] = None,
                 labels : List[str] = ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],
-                path : str = 'data/PhysioNET/') -> Dict[str, Any]: 
+                path : str = 'data/PhysioNET/',
+                verbose : str = 'ERROR') -> Dict[str, Any]: 
     """
     '''
     Description
@@ -88,19 +89,26 @@ def physionet_raw(subject : int = 1,
         session_list = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
     else:
         for i in session_list:
-            if i >= 1 and i <= 14:
+            if type(i) != int or i < 1 or i > 14:
                 raise ValueError("Session list has to be a sublist of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],")
+    if type(path) != str:
+        raise ValueError("Has to be a string type value")
+    if type(verbose) != str:
+        raise ValueError("Has to be a string type value")
+    if verbose not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+        raise ValueError("verbose has to be one of the following: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'")
+    
     if path[-1] != '/':
         path += '/'
 
     # Aqui, sessions é 12 * 30 para que o Y ainda esteja de acordo
 
-    x_length = 2000 * len(session_list) # 2000 ticks por sessão, exceto a 1 e 2.
+    x_length = 20000 * len(session_list) # 20000 ticks por sessão, exceto a 1 e 2.
     if 1 in session_list:
-        x_length += 9760 - 2000 # Remove os 2000 padrão e adiciona os 9760
+        x_length += 9760 - 20000 # Remove os 2000 padrão e adiciona os 9760
     
     if 2 in session_list:
-        x_length += 9760 - 2000
+        x_length += 9760 - 20000
 
 
     X = np.empty((64, x_length)) # (channels, time) 

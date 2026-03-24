@@ -111,7 +111,7 @@ def physio_net(subject : int = 1,
         session_list = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
     else:
         for i in session_list:
-            if type(i) != int or (i >= 1 and i <= 14):
+            if type(i) != int or (i < 1 or i > 14):
                 raise ValueError("Session list has to be a sublist of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],")
     
     if type(path) != str:
@@ -124,12 +124,24 @@ def physio_net(subject : int = 1,
     if verbose not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
         raise ValueError("verbose has to be one of the following: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'")
 
-    # Pra aplicar a session 1 e 2, eu precisaria fazer:
-    # X = np.empty((360, 1, 64, 9760)) # (sessions, 1, channels, time)
-    # Pq session 1 e 2 tem 9760 ticks. E mesmo que eu junte os 30 records de cada sessão, a soma é 2000 ticks
-    X_og = np.empty((360, 1, 64, 9760))
-    X = np.empty((360, 1, 64, 640))
+    X_og = np.empty((2, 1, 64, 9760))
     Y = [] 
+
+    if 1 in session_list:
+        session_list.remove(1)
+        newPath = path + f'S{subject:03d}/S{subject:03d}R01.edf'
+        signals, signals_header, header = plib.highlevel.read_edf(newPath)
+        X_og[0, 0, :, :] = signals[:, 0:9760]
+        Y.append(0) # Rest
+
+    if 2 in session_list:
+        session_list.remove(2)
+        newPath = path + f'S{subject:03d}/S{subject:03d}R02.edf'
+        signals, signals_header, header = plib.highlevel.read_edf(newPath)
+        X_og[1, 0, :, :] = signals[:, 0:9760]
+        Y.append(0) # Rest
+
+    X = np.empty((30*len(session_list), 1, 64, 640))
     ch_names = []
     min_index = min(session_list)
 
@@ -145,8 +157,6 @@ def physio_net(subject : int = 1,
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
         annotations = header['annotations']
-
-        #annot = plib.highlevel.read_edf_header(newPath)['annotations']
 
         for session_idx in range(0, 30):
             start_time_hz = int(annotations[session_idx][0] * 160)
@@ -189,6 +199,7 @@ def physio_net(subject : int = 1,
     
     eegdata : Dict[str, Any] = {
         'X': X,
+        'X_og': X_og,
         'y': Y,
         'y_dict': y_dict,
         'events': events,
@@ -201,7 +212,7 @@ def physio_net(subject : int = 1,
     return eegdata
 
 if __name__ == "__main__":
-    data = physio_net(subject=1, path='../../data/PhysioNET/')
+    data = physio_net(subject=1, path='../../data/PhysioNET/', session_list=[3])
     print(data['data_type'])
     print(data['X'].shape)
     print(data['y'])
