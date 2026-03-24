@@ -61,17 +61,23 @@ def bciciv2b_raw(subject: int=1,
         raise ValueError("Has to be a int type value")
     if subject > 9 or subject < 1:
         raise ValueError("Has to be an existing subject")
-    if type(session_list) != list and session_list is not None:
-        raise ValueError("Has to be a List or None type")
+    if type(session_list) != list and session_list != None:
+        raise ValueError("Has to be an List or None type")
+    valid_sessions = ["01T","02T","03T","04T","05T","01E","02E","03E","04E","05E"]
+    if session_list is None:
+        session_list = valid_sessions
+    if session_list is not None:
+        for s in session_list:
+            if s not in valid_sessions:
+                raise ValueError("Invalid session code")
+    if type(path) != str:
+        raise ValueError("Has to be a string type value")
     if path[-1] != '/':
         path += '/'
         
     sfreq = 250.
     ch_names = np.array(['C3', 'Cz', 'C4'])
     tmin = 0.
-
-    if session_list is None:
-        session_list = ['01T', '02T', '03T', '04E', '05E']
 
     raw_data, raw_labels = [], []
     event_conversion = {
