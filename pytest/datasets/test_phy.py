@@ -3,58 +3,58 @@ import pandas as pd
 import pytest
 from unittest.mock import patch, MagicMock
 
-from bciflow.datasets.phy_raw import physio_net_raw
+from bciflow.datasets.phy import physio_net
 
+class TestPhysioNet:
 
-class TestPhysioNetRaw:
     # ======================================================
     # SECTION 1 - Parameter Validation Tests
     # ======================================================
 
     def test_invalid_subject_type(self):
         with pytest.raises(ValueError):
-            physio_net_raw(subject="1")
+            physio_net(subject="1")
 
     def test_invalid_subject_range(self):
         with pytest.raises(ValueError):
-            physio_net_raw(subject=0)
+            physio_net(subject=0)
         with pytest.raises(ValueError):
-            physio_net_raw(subject=110)
+            physio_net(subject=110)
     
     def test_invalid_labels_type(self):
         with pytest.raises(ValueError):
-            physio_net_raw(labels="left-hand")
+            physio_net(labels="left-hand")
     
     def test_invalid_label_value(self):
         with pytest.raises(ValueError):
-            physio_net_raw(labels=["invalid"])
+            physio_net(labels=["invalid"])
     
     def test_invalid_session_type(self):
         with pytest.raises(ValueError):
-            physio_net_raw(session_list="T")
+            physio_net(session_list="T")
 
     def test_invalid_session_value(self):
         with pytest.raises(ValueError):
-            physio_net_raw(session_list=[0])
+            physio_net(session_list=[0])
         with pytest.raises(ValueError):
-            physio_net_raw(session_list=[15])
+            physio_net(session_list=[15])
     
     def test_invalid_session_value_non_int(self):
         with pytest.raises(ValueError):
-            physio_net_raw(session_list=[3.5])
+            physio_net(session_list=[3.5])
         with pytest.raises(ValueError):
-            physio_net_raw(session_list=["3"])
+            physio_net(session_list=["3"])
     
     def test_invalid_path_type(self):
         with pytest.raises(ValueError):
-            physio_net_raw(path=123)
+            physio_net(path=123)
     
     def test_invalid_verbose_type(self):
         with pytest.raises(ValueError):
-            physio_net_raw(verbose=123)
+            physio_net(verbose=123)
         with pytest.raises(ValueError):
-            physio_net_raw(verbose="INVALID")
-
+            physio_net(verbose="INVALID")
+    
     # ======================================================
     # SECTION 2 — Full Execution Test (mocked)
     # ======================================================
@@ -65,11 +65,19 @@ class TestPhysioNetRaw:
 
         fake_data = np.random.randn(n_channels, total_samples) # plib highlevel read_edf
 
-        annotations_df = {
-            "onset": np.random.rand(30),
-            "duration": np.random.rand(30),
-            "description": np.random.choice(['T0', 'T1', 'T2'], 30)
-        }
+        annotations_df = []
+
+        for i in range(15):
+            annotations_df.append([
+                np.random.rand(), # onset
+                np.random.rand(), # duration
+                np.random.choice(['T0']) # description
+            ])
+            annotations_df.append([
+                np.random.rand(), # onset
+                np.random.rand(), # duration
+                np.random.choice(['T1', 'T2']) # description
+            ])
 
         fake_header = {
             "annotations": annotations_df
@@ -83,10 +91,19 @@ class TestPhysioNetRaw:
 
         mock_read_edf.return_value = (fake_data, fake_signal_header, fake_header)
 
-        eeg = physio_net_raw(subject=1, session_list=[3])
+        session_list_param = [3]
 
-        assert eeg["data_type"] == "raw"
-        assert eeg["X"].shape == (64, 20000)
-        assert len(eeg["y"]) == 30
+        eeg = physio_net(subject=1, session_list=session_list_param)
+
+        x_length = 20000 * len(session_list_param)
+        if 1 in session_list_param:
+            x_length += 9760 - 20000
+        if 2 in session_list_param:
+            x_length += 9760 - 20000
+
+
+        assert eeg["data_type"] == "epochs"
+        assert eeg["X"].shape == (n_channels, x_length)
+        assert len(eeg["y"]) == 15
         assert eeg["sfreq"] == 160.
         assert eeg["tmin"] == 0.
