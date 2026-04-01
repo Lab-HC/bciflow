@@ -95,15 +95,73 @@ class TestPhysioNet:
 
         eeg = physio_net(subject=1, session_list=session_list_param)
 
-        x_length = 20000 * len(session_list_param)
-        if 1 in session_list_param:
-            x_length += 9760 - 20000
-        if 2 in session_list_param:
-            x_length += 9760 - 20000
-
-
         assert eeg["data_type"] == "epochs"
-        assert eeg["X"].shape == (n_channels, x_length)
+        assert eeg["X"].shape == (15, 1, n_channels, 640)
         assert len(eeg["y"]) == 15
         assert eeg["sfreq"] == 160.
         assert eeg["tmin"] == 0.
+    
+    # ======================================================
+    # Section 3 - Full Execution Test (with subjects 1 and 2)
+    # ======================================================
+    @patch("bciflow.datasets.plib.highlevel.read_edf")
+    def test_full_execution_sessions_1_and_2(self, mock_read_edf):
+        n_channels = 64
+        total_samples = 9760
+
+        fake_data = np.random.randn(n_channels, total_samples) # plib highlevel read_edf
+
+        annotations_df = []
+
+        annotations_df.append([
+            np.random.rand(), # onset
+            np.random.rand(), # duration
+            np.random.choice(['T0']) # description
+        ])
+
+        fake_header = {
+            "annotations": annotations_df
+        }
+
+        fake_signal_header = []
+        for i in range(n_channels):
+            fake_signal_header.append({
+                "label": f"Ch{i+1}"
+            })
+        
+        mock_read_edf.return_value = (fake_data, fake_signal_header, fake_header)
+        session_list_param = [1, 2]
+
+        eeg = physio_net(subject=1, session_list=session_list_param, path='fake_path')
+
+        assert eeg["data_type"] == "epochs"
+        assert eeg["X"].shape == (0, 1, n_channels, 640)
+        assert eeg["X_og"].shape == (2, 1, n_channels, 9760)
+        assert len(eeg["y"]) == 2
+        assert eeg["sfreq"] == 160.
+        assert eeg["tmin"] == 0.
+        
+    # ======================================================
+    # SECTION 4 — Auxiliary Function Tests
+    # ======================================================
+
+    def test_aux_function(self):
+        from bciflow.datasets.phy import _string_to_number
+
+        assert _string_to_number("T0", 3) == 0
+        assert _string_to_number("T1", 3) == 1
+        assert _string_to_number("T2", 3) == 2
+
+        assert _string_to_number("T0", 4) == 0
+        assert _string_to_number("T1", 4) == 5
+        assert _string_to_number("T2", 4) == 6
+
+        assert _string_to_number("T0", 5) == 0
+        assert _string_to_number("T1", 5) == 3
+        assert _string_to_number("T2", 5) == 4
+
+        assert _string_to_number("T0", 6) == 0
+        assert _string_to_number("T1", 6) == 7
+        assert _string_to_number("T2", 6) == 8
+
+        assert _string_to_number("Invalid", 0) == -1

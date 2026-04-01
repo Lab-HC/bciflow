@@ -1,28 +1,44 @@
 import pyedflib as plib
-import matplotlib.pyplot as plt
 from typing import List, Dict, Any, Optional
-import mne
-import pandas as pd
 import numpy as np
 
 def _string_to_number(label : str, run) -> int:
 
-    first_case = [3, 4, 7, 8, 11, 12] # Left hand and Right hand
-    #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
+    #real_left_right = [3, 7, 11] # Left hand and Right hand
+    real_both = [5, 9, 13] # Both hands and Both feet
+    imagine_left_right = [4, 8, 12]
+    imagine_both = [6, 10, 14]
 
-    mapping1 = {
+    mapping_real_left_right = {
         'T0': 0, # Rest
         'T1': 1, # Left hand
         'T2': 2 # Right hand 
     }
-    mapping = {
+    mapping_real = {
         'T0': 0, # Rest
         'T1': 3, # Both hands
         'T2': 4, # Both feet
     }
-    if run in first_case:
-        mapping = mapping1
+    mapping_imagine_left_right = {
+        'T0': 0, # Rest
+        'T1': 5, # Imagine left hand
+        'T2': 6 # Imagine right hand
+    }
+    mapping_imagine_both = {
+        'T0': 0, # Rest
+        'T1': 7, # Imagine both hands
+        'T2': 8 # Imagine both feet
+    }
     
+    mapping = mapping_real_left_right
+
+    if run in real_both:
+        mapping = mapping_real
+    elif run in imagine_left_right:
+        mapping = mapping_imagine_left_right
+    elif run in imagine_both:
+        mapping = mapping_imagine_both
+
     return mapping.get(label, -1)  # Retorna -1 se o rótulo não for encontrado
 
 def physionet_raw(subject : int = 1,
@@ -125,10 +141,10 @@ def physionet_raw(subject : int = 1,
 
         annotations = header['annotations']
 
-        X[:, start_index:start_index + signals.shape[1]] = signals
+        X[:, start_index:(start_index + signals.shape[1])] = signals
         start_index += signals.shape[1]
 
-        for j in range(30):
+        for j in range(len(annotations)):
             Y.append(_string_to_number(annotations[j][2], i))
             
         if i == min_session_list:
@@ -153,14 +169,3 @@ def physionet_raw(subject : int = 1,
     }
 
     return eegdata
-
-if __name__ == "__main__":
-    data = physionet_raw(subject=1, path='../../data/PhysioNET/')
-    print(data['data_type'])
-    print(data['X'].shape)
-    print(data['y'])
-    print(len(data['y']))
-    print(data['y_dict'])
-    print(data['ch_names'])
-    print(data['sfreq'])
-    print(data['tmin'])

@@ -1,7 +1,5 @@
 import pyedflib as plib
-import matplotlib.pyplot as plt
 from typing import List, Dict, Any, Optional
-import pandas as pd
 import numpy as np
 
 
@@ -143,17 +141,12 @@ def physio_net(subject : int = 1,
 
     X = np.empty((30*len(session_list), 1, 64, 640))
     ch_names = []
-    min_index = min(session_list)
+    min_index = 3
+    if len(session_list) > 0:
+        min_index = min(session_list)
 
     for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
-        
-        #eventFile = mne.io.read_raw_edf(newPath)
-
-        #annotations = eventFile.annotations
-
-        #description = annotations.description.tolist()
-        #description = [_string_to_number(label, i) for label in description]
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
         annotations = header['annotations']
@@ -172,11 +165,14 @@ def physio_net(subject : int = 1,
                 newValue = h['label'].replace('.', '')
                 ch_names.append(newValue)
 
-
-    for i in range(len(Y) - 1, -1, -1):
-        if Y[i] == 0:
-            Y.pop(i)
-            X = np.delete(X, i, axis=0)
+    #TODO: Verificar o que fazer com os dados de descanso
+    # Acontece que o usuário pode pedir as sessions 1 e 2, mas colocar sem o 'rest'.
+    if len(session_list) > 0:
+        for i in range(len(Y) - 1, -1, -1):
+            if Y[i] == 0:
+                print("Entrei aqui")
+                Y.pop(i)
+                X = np.delete(X, i, axis=0)
 
     y_dict = {
         0: 'rest',
@@ -210,14 +206,3 @@ def physio_net(subject : int = 1,
     }
 
     return eegdata
-
-if __name__ == "__main__":
-    data = physio_net(subject=1, path='../../data/PhysioNET/', session_list=[3])
-    print(data['data_type'])
-    print(data['X'].shape)
-    print(data['y'])
-    print(data['y_dict'])
-    print(data['events'])
-    print(data['ch_names'])
-    print(data['sfreq'])
-    print(data['tmin'])
