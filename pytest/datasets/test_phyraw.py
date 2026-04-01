@@ -1,8 +1,6 @@
-from flask import session
 import numpy as np
-import pandas as pd
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from bciflow.datasets.phy_raw import physionet_raw
 
