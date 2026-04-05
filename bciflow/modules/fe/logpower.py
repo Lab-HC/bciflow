@@ -28,7 +28,29 @@ def logpower(eegdata: dict, flating: bool = False) -> dict:
     output : dict
         The transformed data, with the Log Power stored under the key 'X'.
     '''
+    # -------- Validate eegdata --------
+    if not isinstance(eegdata, dict):
+        raise ValueError("eegdata must be a dictionary.")
+
+    if 'X' not in eegdata:
+        raise ValueError("eegdata must contain the key 'X'.")
+
+    if not isinstance(flating, bool):
+        raise ValueError("flating must be a boolean value.")
+
     X = eegdata['X'].copy()
+
+    # -------- Validate X --------
+    if not isinstance(X, np.ndarray):
+        raise ValueError("eegdata['X'] must be a numpy array.")
+
+    if X.ndim < 2:
+        raise ValueError("X must have at least two dimensions.")
+
+    if not np.isfinite(X).all():
+        raise ValueError("X contains NaN or infinite values.")
+
+    # -------- Prepare data --------
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
 
     X_ = []

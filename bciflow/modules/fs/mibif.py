@@ -45,6 +45,21 @@ class MIBIF:
         -------
         None
         '''
+        # -------- Validate n_features --------
+        if not isinstance(n_features, int):
+            raise ValueError("n_features must be an integer.")
+
+        if n_features <= 0:
+            raise ValueError("n_features must be a positive integer.")
+
+        # -------- Validate clf --------
+        if clf is None:
+            raise ValueError("clf must be a valid classifier object.")
+
+        # -------- Validate paired --------
+        if not isinstance(paired, bool):
+            raise ValueError("paired must be a boolean.")
+                             
         self.original_n_features = n_features
         self.n_features = self.original_n_features
         self.paired = paired
@@ -85,6 +100,56 @@ class MIBIF:
         -------
         self
         '''
+
+        # -------- Validate eegdata --------
+        if not isinstance(eegdata, dict):
+            raise ValueError("eegdata must be a dictionary.")
+
+        if 'X' not in eegdata:
+            raise ValueError("eegdata must contain the key 'X'.")
+
+        if 'y' not in eegdata:
+            raise ValueError("eegdata must contain the key 'y'.")
+
+        X = eegdata['X']
+        y = eegdata['y']
+
+        # -------- Validate X --------
+        if not isinstance(X, np.ndarray):
+            raise ValueError("eegdata['X'] must be a numpy array.")
+
+        if X.ndim not in [2, 3]:
+            raise ValueError(
+                "X must have shape (trials, features) or (trials, bands, features)."
+            )
+
+        if X.shape[0] < 2:
+            raise ValueError("X must contain at least two trials.")
+
+        if not np.isfinite(X).all():
+            raise ValueError("X contains NaN or infinite values.")
+
+        # -------- Validate y --------
+        if not isinstance(y, np.ndarray):
+            raise ValueError("eegdata['y'] must be a numpy array.")
+
+        if y.ndim != 1:
+            raise ValueError("y must be a 1D array.")
+
+        if len(y) != X.shape[0]:
+            raise ValueError("Number of labels must match number of trials.")
+
+        if not np.isfinite(y).all():
+            raise ValueError("y contains NaN or infinite values.")
+
+        # -------- Validate classifier --------
+        if not hasattr(self.clf, "fit"):
+            raise ValueError("clf must implement a 'fit' method.")
+
+        if not hasattr(self.clf, "predict"):
+            raise ValueError("clf must implement a 'predict' method.")
+
+        # -------- Initialize parameters --------
         self.n_features = self.original_n_features
 
         X = eegdata['X'].copy()
@@ -145,8 +210,37 @@ class MIBIF:
         output : dict
             The transformed data, containing the selected features.
         '''
+
+         # -------- Validate eegdata --------
+        if not isinstance(eegdata, dict):
+            raise ValueError("eegdata must be a dictionary.")
+
+        if 'X' not in eegdata:
+            raise ValueError("eegdata must contain the key 'X'.")
+
         X = eegdata['X'].copy()
 
+        # -------- Validate X --------
+        if not isinstance(X, np.ndarray):
+            raise ValueError("eegdata['X'] must be a numpy array.")
+
+        if X.ndim < 2:
+            raise ValueError("X must have at least two dimensions (trials, features...).")
+
+        if X.shape[0] < 1:
+            raise ValueError("X must contain at least one trial.")
+
+        if not np.isfinite(X).all():
+            raise ValueError("X contains NaN or infinite values.")
+
+        # -------- Validate fitted attributes --------
+        if not hasattr(self, "order") or self.order is None:
+            raise ValueError("The feature selector has not been fitted yet.")
+
+        if not hasattr(self, "n_features"):
+            raise ValueError("The feature selector has not been fitted yet.")
+        
+        # -------- Prepare data --------
         X_ = [X[i].reshape(-1) for i in range(len(X))]
         X_ = np.array(X_)
         X_ = X_[:, self.order][:, :self.n_features]

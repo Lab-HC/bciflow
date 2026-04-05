@@ -19,12 +19,48 @@ def wavelet(eegdata, levels=5, inplace=False):
         A dictionary containing the EEG data, where the key 'X' holds the raw signal.
     levels : int
         The number of decomposition levels (scales) for the wavelet transform.
+    inplace : bool
+        If False, the input dictionary is copied before modification.
 
     Returns
     -------
     dict
         The same dictionary passed in parameters, but with the transformed data stored under the key 'X'.
     '''
+
+    # ---- Validation of eegdata ----
+    if not isinstance(eegdata, dict):
+        raise ValueError("eegdata must be a dictionary.")
+
+    if 'X' not in eegdata:
+        raise ValueError("eegdata must contain the key 'X'.")
+
+    # ---- Validation of levels ----
+    if not isinstance(levels, int):
+        raise ValueError("levels must be an integer.")
+
+    if levels <= 0:
+        raise ValueError("levels must be greater than 0.")
+
+    # ---- Validation of X ----
+    X = eegdata['X']
+
+    if not isinstance(X, np.ndarray):
+        raise ValueError("eegdata['X'] must be a numpy array.")
+
+    if X.ndim != 4:
+        raise ValueError(
+            "eegdata['X'] must have 4 dimensions (trials, channels, samples, segments)."
+        )
+
+    if X.shape[-1] <= 0:
+        raise ValueError("The last dimension of X must contain signal samples.")
+
+    if levels > X.shape[-1]:
+        raise ValueError(
+            "levels cannot be greater than the number of samples in the signal."
+        )
+
     if not inplace:
         eegdata = eegdata.copy()
     X = eegdata['X'].copy()

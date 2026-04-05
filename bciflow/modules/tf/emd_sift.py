@@ -19,19 +19,47 @@ def EMD(eegdata, n_imfs=5, inplace=False):
         A dictionary containing the EEG data, where the key 'X' holds the raw signal.
     n_imfs : int
         The number of IMFs to extract (default is 5).
-
+    inplace : bool
+        If False, the input dictionary is copied before modification.
     Returns
     -------
     dict
-        The same dictionary passed in parameters, but with the transformed data stored under the key 'X'. The shape of the transformed data is (n_trials, n_imfs, n_electrodes, n_samples).
-
-
-    Raises
-    -------
-    ValueError 
-        If the input data does not have exactly one band (shape[1] != 1).
-    
+        The same dictionary passed in parameters, but with the transformed data stored under the key 'X'. 
+        The shape of the transformed data is (n_trials, n_imfs, n_electrodes, n_samples).
     '''
+    # -------- Validate eegdata --------
+    if not isinstance(eegdata, dict):
+        raise ValueError("eegdata must be a dictionary.")
+
+    if 'X' not in eegdata:
+        raise ValueError("eegdata must contain the key 'X'.")
+
+    # -------- Validate X --------
+    X = eegdata['X']
+
+    if not isinstance(X, np.ndarray):
+        raise ValueError("eegdata['X'] must be a numpy array.")
+
+    if X.ndim != 4:
+        raise ValueError(
+            "eegdata['X'] must have 4 dimensions (trials, bands, electrodes, samples)."
+        )
+
+    if X.shape[-1] <= 1:
+        raise ValueError("The signal must contain more than one sample.")
+
+    # verify if the data has only one band
+    if X.shape[1] != 1:
+        raise ValueError("The input data must have only one band.")
+
+    # -------- Validate n_imfs --------
+    if not isinstance(n_imfs, int):
+        raise ValueError("n_imfs must be an integer.")
+
+    if n_imfs <= 0:
+        raise ValueError("n_imfs must be greater than zero.")
+
+    # -------- Copy logic --------
     if not inplace:
         eegdata = eegdata.copy()
     X = eegdata['X'].copy()
