@@ -1,34 +1,51 @@
 import pyedflib as plib
-import matplotlib.pyplot as plt
 from typing import List, Dict, Any, Optional
-import mne
-import pandas as pd
 import numpy as np
 
 def _string_to_number(label : str, run) -> int:
 
-    first_case = [3, 4, 7, 8, 11, 12] # Left hand and Right hand
-    #second_case = [5, 6, 9, 10, 13, 14] # Both hands and Both feet
+    #real_left_right = [3, 7, 11] # Left hand and Right hand
+    real_both = [5, 9, 13] # Both hands and Both feet
+    imagine_left_right = [4, 8, 12]
+    imagine_both = [6, 10, 14]
 
-    mapping1 = {
+    mapping_real_left_right = {
         'T0': 0, # Rest
         'T1': 1, # Left hand
         'T2': 2 # Right hand 
     }
-    mapping = {
+    mapping_real = {
         'T0': 0, # Rest
         'T1': 3, # Both hands
         'T2': 4, # Both feet
     }
-    if run in first_case:
-        mapping = mapping1
+    mapping_imagine_left_right = {
+        'T0': 0, # Rest
+        'T1': 5, # Imagine left hand
+        'T2': 6 # Imagine right hand
+    }
+    mapping_imagine_both = {
+        'T0': 0, # Rest
+        'T1': 7, # Imagine both hands
+        'T2': 8 # Imagine both feet
+    }
     
+    mapping = mapping_real_left_right
+
+    if run in real_both:
+        mapping = mapping_real
+    elif run in imagine_left_right:
+        mapping = mapping_imagine_left_right
+    elif run in imagine_both:
+        mapping = mapping_imagine_both
+
     return mapping.get(label, -1)  # Retorna -1 se o rótulo não for encontrado
 
 def physionet_raw(subject : int = 1,
                 session_list : Optional[List[str]] = None,
                 labels : List[str] = ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],
-                path : str = 'data/PhysioNET/') -> Dict[str, Any]: 
+                path : str = 'data/PhysioNET/',
+                verbose : str = 'ERROR') -> Dict[str, Any]: 
     """
     '''
     Description
@@ -45,7 +62,7 @@ def physionet_raw(subject : int = 1,
         subject : int
             Index of the subject to load.
         session_list : list, optional
-            List of session codes
+            List of session numbers to load (e.g., [3, 4, 5] for sessions 3, 4, and 5). If None, sessions (3-14) are loaded.
         labels : dict
             Dictionary mapping event names to event codes
         path : str
@@ -84,39 +101,53 @@ def physionet_raw(subject : int = 1,
             raise ValueError("labels has to be a sublist of ['rest', 'left-hand', 'right-hand', 'both-hands', 'both-feet'],")
     if type(session_list) != list and session_list != None:
         raise ValueError("Has to be an List or None type")
+    if session_list == None:
+        session_list = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    else:
+        for i in session_list:
+            if type(i) != int or i < 1 or i > 14:
+                raise ValueError("Session list has to be a sublist of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],")
+    if type(path) != str:
+        raise ValueError("Has to be a string type value")
+    if type(verbose) != str:
+        raise ValueError("Has to be a string type value")
+    if verbose not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+        raise ValueError("verbose has to be one of the following: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'")
+    
     if path[-1] != '/':
         path += '/'
 
     # Aqui, sessions é 12 * 30 para que o Y ainda esteja de acordo
-    X = np.empty((12 * 30, 64, 672)) # (sessions, channels, time) 
+
+    x_length = 20000 * len(session_list) # 20000 ticks por sessão, exceto a 1 e 2.
+    if 1 in session_list:
+        x_length += 9760 - 20000 # Remove os 2000 padrão e adiciona os 9760
+    
+    if 2 in session_list:
+        x_length += 9760 - 20000
+
+
+    X = np.empty((64, x_length)) # (channels, time) 
     Y = []
     ch_names = []
     
-    for i in range(3, 15):
+    min_session_list = min(session_list)
+    start_index = 0
+
+    for i in session_list:
         newPath = path + f'S{subject:03d}/S{subject:03d}R{i:02d}.edf'
-        
-        eventFile = mne.io.read_raw_edf(newPath)
-
-        annotations = eventFile.annotations
-
-        description = annotations.description.tolist()
-        description = [_string_to_number(label, i) for label in description]
-        Y.extend(description)
 
         signals, signals_header, header = plib.highlevel.read_edf(newPath)
 
-        for session_idx in range(len(annotations.onset) - 1):
-            start_time_hz = int(annotations.onset[session_idx] * 160)
-            end_time_hz = int(annotations.onset[session_idx + 1] * 160)
+        annotations = header['annotations']
 
-            session = signals[:, start_time_hz:end_time_hz]
-            if session.shape[1] < 672:
-                padding = 672 - session.shape[1]
-                session = np.pad(session, ((0, 0), (0, padding)), mode='constant')
+        X[:, start_index:(start_index + signals.shape[1])] = signals
+        start_index += signals.shape[1]
 
-            X[i-1 * 30 + session_idx, :, :] = session
+        for j in range(len(annotations)):
+            Y.append(_string_to_number(annotations[j][2], i))
             
-        if i == 1:
+        if i == min_session_list:
             for header in signals_header:
                 newValue = header['label'].replace('.', '')
                 ch_names.append(newValue)
@@ -138,14 +169,3 @@ def physionet_raw(subject : int = 1,
     }
 
     return eegdata
-
-if __name__ == "__main__":
-    data = physionet_raw(subject=1, path='../../data/PhysioNET/')
-    print(data['data_type'])
-    print(data['X'].shape)
-    print(data['y'])
-    print(len(data['y']))
-    print(data['y_dict'])
-    print(data['ch_names'])
-    print(data['sfreq'])
-    print(data['tmin'])

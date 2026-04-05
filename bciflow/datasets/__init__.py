@@ -7,5 +7,5 @@ from .cbcic import *
 # from .cbcic_raw import *
 from .mengu import *
 from .dreams import *
-from .physionet import *
-from .physionet_raw import *
+from .phy import *
+from .phy_raw import *

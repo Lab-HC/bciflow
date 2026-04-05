@@ -57,7 +57,7 @@ def bciciv2b(subject: int=1,
     >>> print(eeg_data['y'])  # Labels
     '''
     """
-
+    
     if type(subject) != int:
         raise ValueError("Has to be a int type value")
     if subject > 9 or subject < 1:
@@ -69,6 +69,15 @@ def bciciv2b(subject: int=1,
             raise ValueError("labels has to be a sublist of ['left-hand', 'right-hand']")
     if type(session_list) != list and session_list != None:
         raise ValueError("Has to be an List or None type")
+    valid_sessions = ["01T","02T","03T","04T","05T","01E","02E","03E","04E","05E"]
+    if session_list is None:
+        session_list = valid_sessions
+    if session_list is not None:
+        for s in session_list:
+            if s not in valid_sessions:
+                raise ValueError("Invalid session code")
+    if type(path) != str:
+        raise ValueError("Has to be a string type value")      
     if path[-1] != '/':
         path += '/'
         
@@ -81,9 +90,6 @@ def bciciv2b(subject: int=1,
     ch_names = ['C3', 'Cz', 'C4']
     ch_names = np.array(ch_names)
     tmin = 0.
-
-    if session_list is None:
-        session_list = ['01T', '02T', '03T', '04E', '05E']
 
     rawData, rawLabels = [], []
 
@@ -99,7 +105,7 @@ def bciciv2b(subject: int=1,
         times_ = np.array(raw.times)
         rawData_ = []
         for trial_ in new_trial_time:
-            idx_ = np.where(times_ == trial_)[0][0]
+            idx_ = np.argmin(np.abs(times_ - trial_))
             rawData_.append(raw_data[:, idx_:idx_+2125])
         rawData_ = np.array(rawData_)
         rawLabels_ = np.array(scipy.io.loadmat(path+'B%02d%s.mat'%(subject, sec))['classlabel']).reshape(-1)
