@@ -4,6 +4,18 @@ from unittest.mock import patch
 
 from bciflow.datasets.phy_raw import physionet_raw
 
+# ======================================================
+# Test Suite: PhysioNET raw
+# ======================================================
+#
+# Cobertura:
+#  1. Validação de tipos e valores dos parâmetros de entrada
+#  2. Normalização automática do path (adição de '/')
+#  3. Mock do carregamento externo (plib highlevel read_edf)
+#  4. Extração e segmentação de trials
+#  5. Mapeamento de labels
+#  6. Estrutura e integridade do dicionário retornado
+# ======================================================
 
 class TestPhysioNetRaw:
     # ======================================================
