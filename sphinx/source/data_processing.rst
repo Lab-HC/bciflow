@@ -151,7 +151,7 @@ Here is the entire pipeline code:
    
    dataset = cbcic(subject=1, path='data/cbcic/')
    
-   pre_folding = {'tf': {filterbank, {'kind_bp': 'chebyshevII'}}}
+   pre_folding = {'tf': (filterbank, {'kind_bp': 'chebyshevII'})}
    
    sf = csp()
    fe = logpower
@@ -159,10 +159,10 @@ Here is the entire pipeline code:
    clf = lda()
    
    pos_folding = {
-       'sf': {sf, ()},
-       'fe': {fe, ()},
-       'fs': {fs, ()},
-       'clf': {clf, ()}
+       'sf': (sf, {}),
+       'fe': (fe, {}),
+       'fs': (fs, {}),
+       'clf': (clf, {})
    }
    
    results = kfold(

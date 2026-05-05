@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'bciflow'
 copyright = '2025, Gabriel Henrique de Souza'
 author = 'Gabriel Henrique de Souza'
-release = '1.0.0.dev7'
+release = '1.0.0.dev10'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
