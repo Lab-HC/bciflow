@@ -9,7 +9,7 @@ def bciciv2a(subject: int=1,
              session_list: List[str] = ['T', 'E'],
              EOG: bool = False,
              path: str = 'data/BCICIV2a/',
-             verbose='ERROR') -> Dict[str, Any]:
+             verbose:str ='ERROR') -> Dict[str, Any]:
     """
     Description
     -----------
@@ -109,7 +109,7 @@ def bciciv2a(subject: int=1,
 
     rawData, rawLabels = [], []
     for sec in session_list:
-        raw=mne.io.read_raw_gdf(path+'/A%02d%s.gdf'%(subject, sec), preload=True, verbose=verbose)
+        raw=mne.io.read_raw_gdf(path+'A%02d%s.gdf'%(subject, sec), preload=True, verbose=verbose)
         raw_data = raw.get_data()[:len(ch_names)]
         annotations = raw.annotations.to_data_frame()
         first_timestamp = pd.to_datetime(annotations['onset'].iloc[0])
@@ -145,14 +145,3 @@ def bciciv2a(subject: int=1,
             'events': events, 
             'ch_names': ch_names,
             'tmin': tmin}
-
-if __name__ == "__main__":
-    data = bciciv2a(subject=1, session_list=['T', 'E'], labels=['left-hand', 'right-hand'], EOG=False, path='../data/BCICIV2a/')
-    print(data['data_type'])
-    print(data['X'].shape)
-    print(data['y'].shape)
-    print(data['sfreq'])
-    print(data['y_dict'])
-    print(data['events'])
-    print(data['ch_names'])
-    print(data['tmin'])

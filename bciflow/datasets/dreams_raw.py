@@ -6,7 +6,8 @@ from typing import Dict, Any
 def dreams_dataset(
     path="Data/DatabaseREMs/",
     subject=1,
-    data_groups = ["EEG","EOG","EMG", "ECG", "Resp", "Oxímetro", "Outros"]
+    dataGroups = ["EEG","EOG","EMG", "ECG", "Resp", "Oxímetro", "Outros"],
+    dataType = "raw",
 ) -> Dict[str, Any]:
     """
     Description
@@ -57,29 +58,19 @@ def dreams_dataset(
 
     Examples
     --------
-    Load subject 1 data:
+    Load subject 1 data in epochs format:
 
     >>> from bciflow.datasets import dreams_dataset
     >>> eeg_data = dreams_dataset(subject=1, dataType="epochs")
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'].shape)  # Labels aligned with epochs
+
+    Load subject 2 raw continuous data with EEG + ECG only:
+
+    >>> eeg_data = dreams_dataset(subject=2, dataGroups=["EEG","ECG"], dataType="raw")
+    >>> print(eeg_data['X'].shape)  
+    >>> print(len(eeg_data['ch_names']))
     """
-
-    if not isinstance(path, str):
-        raise TypeError("Path must be a string.")
-    if not isinstance(subject, int):
-        raise TypeError("Subject index must be an integer.")
-    if subject <= 0 or subject > 9:
-        raise TypeError("Subject index must be a positive integer between 1 and 9.")
-    if not isinstance(data_groups, list):
-        raise TypeError("data_groups must be a list of strings.")
-    for group in data_groups:
-        if group not in ["EEG","EOG","EMG", "ECG", "Resp", "Oxímetro", "Outros"]:
-            raise ValueError(f"Invalid data group: {group}. Must be one of ['EEG','EOG','EMG','ECG','Resp','Oxímetro','Outros'].")
-
-    if path[-1] != '/':
-        path += '/'
-
     
     CHANNEL_GROUPS = {
         "EEG": ["FP1-A2", "FP2-A1", "CZ-A1", "CZ2-A1", "O1-A2", "O2-A1"],
@@ -117,8 +108,6 @@ def dreams_dataset(
 
     signals = raw.get_data().T  # (samples, channels)
 
-    print("Signals shape: ", signals.shape)
-
     # Load hypnogram if available
     if hypnogram_file:
         with open(hypnogram_file, "r") as f:
@@ -140,14 +129,14 @@ def dreams_dataset(
     trials = np.array(trials)  # (num_trials, channels, samples)
 
     _trials = []
-    for d_group in data_groups:
+    for dataGroup in dataGroups:
         for group, channels in CHANNEL_GROUPS.items():
-            if d_group == group:
+            if dataGroup == group:
                 idxs = [ch_names.index(ch) for ch in channels if ch in ch_names]
                 if len(idxs) > 0:
                     _trials = trials[:, idxs, :]  # (trials, chans, samples)
 
-    x = _trials[:, np.newaxis, :, :]
+    _X = _trials[:, np.newaxis, :, :]
 
     # Map sleep stage codes
     y_dict = {
@@ -158,28 +147,18 @@ def dreams_dataset(
         "REM": 4,
         "Awake": 5
     }
-
-    y = stages
+    y = []
+    X = _X.reshape(1, _X.shape[2],_X.shape[0]*_X.shape[3])
+    _stages = np.repeat(stages, samples_per_window)
+    y = _stages
 
     return {
-        "X": x,
+        "X": X,
         "y": y,
         "sfreq": sfreq,
         "y_dict": y_dict,
         "events": None,
         "ch_names": ch_names,
         "tmin": 0.0,
-        "data_type": 'epochs'
+        "data_type": dataType
     }
-
-
-if __name__ == "__main__":
-    data = dreams_dataset(subject=1, data_groups=["EEG","ECG"], path="data/DatabaseREMs/")
-    '''
-    '''
-    print(data["X"].shape)
-    print(data["y"].shape)
-    print(data["ch_names"])
-    print(data["sfreq"])
-    print(data["y_dict"])
-    print(data["data_type"])

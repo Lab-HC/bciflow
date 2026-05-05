@@ -11,7 +11,7 @@ Function
 import numpy as np
 import emd
 
-def EMD(eegdata, n_imfs=5):
+def EMD(eegdata, n_imfs=5, inplace=False):
     '''
     Parameters
     ----------
@@ -19,19 +19,49 @@ def EMD(eegdata, n_imfs=5):
         A dictionary containing the EEG data, where the key 'X' holds the raw signal.
     n_imfs : int
         The number of IMFs to extract (default is 5).
-
+    inplace : bool
+        If False, the input dictionary is copied before modification.
     Returns
     -------
     dict
-        The same dictionary passed in parameters, but with the transformed data stored under the key 'X'. The shape of the transformed data is (n_trials, n_imfs, n_electrodes, n_samples).
-
-
-    Raises
-    -------
-    ValueError 
-        If the input data does not have exactly one band (shape[1] != 1).
-    
+        The same dictionary passed in parameters, but with the transformed data stored under the key 'X'. 
+        The shape of the transformed data is (n_trials, n_imfs, n_electrodes, n_samples).
     '''
+    # -------- Validate eegdata --------
+    if not isinstance(eegdata, dict):
+        raise ValueError("eegdata must be a dictionary.")
+
+    if 'X' not in eegdata:
+        raise ValueError("eegdata must contain the key 'X'.")
+
+    # -------- Validate X --------
+    X = eegdata['X']
+
+    if not isinstance(X, np.ndarray):
+        raise ValueError("eegdata['X'] must be a numpy array.")
+
+    if X.ndim != 4:
+        raise ValueError(
+            "eegdata['X'] must have 4 dimensions (trials, bands, electrodes, samples)."
+        )
+
+    if X.shape[-1] <= 1:
+        raise ValueError("The signal must contain more than one sample.")
+
+    # verify if the data has only one band
+    if X.shape[1] != 1:
+        raise ValueError("The input data must have only one band.")
+
+    # -------- Validate n_imfs --------
+    if not isinstance(n_imfs, int):
+        raise ValueError("n_imfs must be an integer.")
+
+    if n_imfs <= 0:
+        raise ValueError("n_imfs must be greater than zero.")
+
+    # -------- Copy logic --------
+    if not inplace:
+        eegdata = eegdata.copy()
     X = eegdata['X'].copy()
     # verify if the data has only one band
     if X.shape[1] != 1:
@@ -39,10 +69,10 @@ def EMD(eegdata, n_imfs=5):
     X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
 
     X_ = []
-
     for signal_ in range(X.shape[0]):
         try:
             imfs_ = emd.sift.sift(X[signal_], max_imfs=None).T
+            
         except:
             imfs_ = np.random.rand(n_imfs, X.shape[-1]) * 1e-6
 
@@ -50,13 +80,14 @@ def EMD(eegdata, n_imfs=5):
             imfs_[n_imfs-1] = np.sum(imfs_[n_imfs-1:], axis=0)
             imfs_ = imfs_[:n_imfs]
         elif len(imfs_) < n_imfs:
-            imfs_ = np.concatenate((imfs_, np.zeros((n_imfs-len(imfs_), X.shape[-1]))), axis=0)
+            eps = 1e-10
+            imfs_ = np.concatenate((imfs_, np.zeros((n_imfs-len(imfs_), X.shape[-1]))), axis=0) + eps
         
         X_.append(imfs_)
 
     X_ = np.array(X_)
     X_ = X_.reshape(eegdata['X'].shape[0], eegdata['X'].shape[2],n_imfs*eegdata['X'].shape[1], eegdata['X'].shape[3])
     X_ = np.transpose(X_, (0, 2, 1, 3))
+        
     eegdata['X'] = X_
-
     return eegdata

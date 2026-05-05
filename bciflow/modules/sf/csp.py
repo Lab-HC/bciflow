@@ -60,10 +60,15 @@ class csp:
     bands: int = None
 
     def __init__(self, m_pairs: int = 2):
-        if type(m_pairs) != int or m_pairs <= 0:
-            raise ValueError("Must be a positive integer")
-        else:
-            self.m_pairs = m_pairs
+        # -------- Validate m_pairs --------
+        if not isinstance(m_pairs, int):
+            raise ValueError("m_pairs must be an integer.")
+
+        if m_pairs <= 0:
+            raise ValueError("m_pairs must be a positive integer.")
+
+        # -------- Initialize parameter --------
+        self.m_pairs = m_pairs
 
     def fit(self, eegdata: dict) -> np.ndarray:
         ''' 
@@ -85,27 +90,73 @@ class csp:
             If any of the input parameters are invalid
 
         '''
-        X = None
-        y = None
-        if type(eegdata['X']) != np.ndarray:
-            raise ValueError("data must be an array-like object")
-        else:
-            X = eegdata['X'].copy()
 
-        if type(eegdata['y']) != np.ndarray:
-            raise ValueError("data must be an array-like object")
-        else:
-            y = eegdata['y'].copy()
+        # -------- Validate eegdata --------
+        if not isinstance(eegdata, dict):
+            raise ValueError("eegdata must be a dictionary.")
 
-        self.bands = X.shape[1]
-        self.n_electrodes = X.shape[2]
+        if 'X' not in eegdata:
+            raise ValueError("eegdata must contain the key 'X'.")
 
-        self.W = np.zeros((self.bands, self.n_electrodes, self.n_electrodes))
+        if 'y' not in eegdata:
+            raise ValueError("eegdata must contain the key 'y'.")
 
-        # unique values of y
+        X = eegdata['X']
+        y = eegdata['y']
+
+        # -------- Validate X --------
+        if not isinstance(X, np.ndarray):
+            raise ValueError("eegdata['X'] must be a numpy array.")
+
+        if X.ndim != 4:
+            raise ValueError(
+                "X must have shape (trials, bands, electrodes, samples)."
+            )
+
+        if X.shape[0] < 2:
+            raise ValueError("X must contain at least two trials.")
+
+        if X.shape[-1] <= 1:
+            raise ValueError("Each trial must contain more than one sample.")
+
+        if not np.isfinite(X).all():
+            raise ValueError("X contains NaN or infinite values.")
+
+        # -------- Validate y --------
+        if not isinstance(y, np.ndarray):
+            raise ValueError("eegdata['y'] must be a numpy array.")
+
+        if y.ndim != 1:
+            raise ValueError("y must be a 1D array.")
+
+        if len(y) != X.shape[0]:
+            raise ValueError("Number of labels must match number of trials.")
+
+        if not np.isfinite(y).all():
+            raise ValueError("y contains NaN or infinite values.")
+
+        # -------- Validate classes --------
         y_unique = np.unique(y)
+
         if len(y_unique) != 2:
             raise ValueError("y must have exactly two unique classes.")
+
+        if np.sum(y == y_unique[0]) == 0 or np.sum(y == y_unique[1]) == 0:
+            raise ValueError("Both classes must contain at least one trial.")
+
+        # -------- Validate electrodes / CSP parameters --------
+        self.n_electrodes = X.shape[2]
+
+        if self.n_electrodes < 2:
+            raise ValueError("Number of electrodes must be at least 2.")
+
+        if self.m_pairs > self.n_electrodes // 2:
+            raise ValueError("m_pairs must be <= n_electrodes // 2.")
+
+        # -------- Initialize parameters --------
+        self.bands = X.shape[1]
+
+        self.W = np.zeros((self.bands, self.n_electrodes, self.n_electrodes))
 
         sigma = np.zeros((len(y_unique), self.bands, self.n_electrodes, self.n_electrodes))
 
@@ -160,21 +211,60 @@ class csp:
             If the input data does not match the expected format or dimensions.
         
         '''
+        
+        # -------- Validate eegdata --------
+        if not isinstance(eegdata, dict):
+            raise ValueError("eegdata must be a dictionary.")
 
-        X = None
-        y = None
-        if type(eegdata['X']) != np.ndarray:
-            raise ValueError("data must be an array-like object")
-        else:
-            X = eegdata['X'].copy()
+        if 'X' not in eegdata:
+            raise ValueError("eegdata must contain the key 'X'.")
 
+        X = eegdata['X']
 
-        if len(X.shape) == 3:
+        # -------- Validate X --------
+        if not isinstance(X, np.ndarray):
+            raise ValueError("eegdata['X'] must be a numpy array.")
+
+        if X.ndim not in [3, 4]:
+            raise ValueError(
+                "X must have shape (trials, electrodes, samples) or (trials, bands, electrodes, samples)."
+            )
+
+        if X.shape[0] < 1:
+            raise ValueError("X must contain at least one trial.")
+
+        if X.shape[-1] <= 1:
+            raise ValueError("Each trial must contain more than one sample.")
+
+        if not np.isfinite(X).all():
+            raise ValueError("X contains NaN or infinite values.")
+
+        # -------- Validate fitted parameters --------
+        if self.W is None:
+            raise ValueError("CSP filter has not been fitted yet.")
+
+        if self.bands is None or self.n_electrodes is None:
+            raise ValueError("CSP object is not properly initialized. Call fit() first.")
+
+        # -------- Expand dimensions if needed --------
+        X = X.copy()
+
+        if X.ndim == 3:
             X = np.expand_dims(X, axis=1)
 
+        # -------- Validate bands --------
         if X.shape[1] != self.bands:
-            raise ValueError("The number of bands in the input data is different from the number of bands in the fitted data.")
-        
+            raise ValueError(
+                "The number of bands in the input data is different from the number of bands in the fitted data."
+            )
+
+        # -------- Validate electrodes --------
+        if X.shape[2] != self.n_electrodes:
+            raise ValueError(
+                "The number of electrodes in the input data does not match the fitted CSP model."
+            )
+
+        # -------- Apply CSP filters --------
         X = [np.transpose(self.W[band_]) @ X[:, band_] for band_ in range(self.bands)]
         X = np.swapaxes(np.array(X), 0, 1)
 
@@ -203,18 +293,5 @@ class csp:
             If the input data does not match the expected format or dimensions.
         
         '''
-
-        X = None
-        y = None
-        if type(eegdata['X']) != np.ndarray:
-            raise ValueError("data must be an array-like object")
-        else:
-            X = eegdata['X'].copy()
-
-        if type(eegdata['y']) != np.ndarray:
-            raise ValueError("data must be an array-like object")
-        else:
-            y = eegdata['y'].copy()
-
 
         return self.fit(eegdata).transform(eegdata)

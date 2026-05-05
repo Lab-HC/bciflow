@@ -53,8 +53,8 @@ def bciciv2a_raw(subject: int=1,
     --------
     Load EEG data for subject 1, all sessions, and default labels:
 
-    >>> from bciflow.datasets import bciciv2a.raw
-    >>> eeg_data = bciciv2a.raw(subject=1)
+    >>> from bciflow.datasets import bciciv2a_raw
+    >>> eeg_data = bciciv2a_raw(subject=1)
     >>> print(eeg_data['X'].shape)  # Shape of the EEG data
     >>> print(eeg_data['y'])  # Labels
     '''
@@ -93,31 +93,30 @@ def bciciv2a_raw(subject: int=1,
 
     raw_data, raw_labels = [], []
     for sec in session_list:
-        raw=mne.io.read_raw_gdf(path+'/A%02d%s.gdf'%(subject, sec), preload=True, verbose=verbose)
+        raw=mne.io.read_raw_gdf(path+'A%02d%s.gdf'%(subject, sec), preload=True, verbose=verbose)
         raw_labels_ = np.array(scipy.io.loadmat(path+'/A%02d%s.mat'%(subject, sec))['classlabel']).reshape(-1)
         raw_data_ = raw.get_data()[:len(ch_names)]
         annotations = raw.annotations.to_data_frame()
         first_timestamp = pd.to_datetime(annotations['onset'].iloc[0])
         annotations['onset'] = (pd.to_datetime(annotations['onset']) - first_timestamp).dt.total_seconds()
-        annotations['description'] = annotations['description'].astype(int)
-
+        annotations['description'] = annotations['description'].values.astype(int)
         times_ = np.array(raw.times)
         y_labels = np.zeros(len(times_))
 
         # idling eyes open
-        new_trial_time = np.array(annotations[annotations['description']==276]['onset'])
+        new_trial_time = np.array(annotations['onset'][annotations['description']==276])
         for i in range(len(new_trial_time)):
             start_trial = new_trial_time[i]
             y_labels[np.searchsorted(times_, start_trial):] = 11
 
         # idling eyes closed
-        new_trial_time = np.array(annotations[annotations['description']==277]['onset'])
+        new_trial_time = np.array(annotations['onset'][annotations['description']==277])
         for i in range(len(new_trial_time)):
             start_trial = new_trial_time[i]
             y_labels[np.searchsorted(times_, start_trial):] = 12
 
         # trials
-        new_trial_time = np.array(annotations[annotations['description']==768]['onset'])
+        new_trial_time = np.array(annotations['onset'][annotations['description']==768])
         for i in range(len(new_trial_time)):
             start_trial = new_trial_time[i]
             start_cue = start_trial + 2
@@ -151,12 +150,3 @@ def bciciv2a_raw(subject: int=1,
             'ch_names': ch_names,
             'tmin': tmin}
 
-if __name__ == "__main__":
-    data = bciciv2a_raw(subject=1, session_list=['T', 'E'], EOG=False, path='../data/BCICIV2a/')
-    print(data['data_type'])
-    print(data['X'].shape)
-    print(data['y'].shape)
-    print(data['sfreq'])
-    print(data['y_dict'])
-    print(data['ch_names'])
-    print(data['tmin'])

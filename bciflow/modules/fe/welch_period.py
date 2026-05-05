@@ -33,10 +33,12 @@ class welch_period():
         -------
         None
         '''
-        if type(flating) != bool:
-            raise ValueError ("Has to be a boolean type value")
-        else:
-            self.flating = flating
+        # -------- Validate flating --------
+        if not isinstance(flating, bool):
+            raise ValueError("flating must be a boolean value.")
+
+        self.flating = flating
+
 
     def fit(self, eegdata):
         '''
@@ -51,8 +53,13 @@ class welch_period():
         -------
         self
         '''
-        if type(eegdata) != dict:
-            raise ValueError ("Has to be a dict type")         
+        # -------- Validate eegdata --------
+        if not isinstance(eegdata, dict):
+            raise ValueError("eegdata must be a dictionary.")
+
+        if 'X' not in eegdata:
+            raise ValueError("eegdata must contain the key 'X'.")
+
         return self
 
     def transform(self, eegdata, sfreq: int) -> dict:
@@ -73,10 +80,30 @@ class welch_period():
         output : dict
             The transformed data.
         '''
-        if type(eegdata) != dict:
-            raise ValueError ("Has to be a dict type")                
+
+        # -------- Validate eegdata --------
+        if not isinstance(eegdata, dict):
+            raise ValueError("eegdata must be a dictionary.")
+
+        if 'X' not in eegdata:
+            raise ValueError("eegdata must contain the key 'X'.")
+
         X = eegdata['X'].copy()
-            
+
+        # -------- Validate X --------
+        if not isinstance(X, np.ndarray):
+            raise ValueError("eegdata['X'] must be a numpy array.")
+
+        if X.ndim not in [3, 4]:
+            raise ValueError(
+                "X must have shape (bands, channels, samples) or "
+                "(trials, bands, channels, samples)."
+            )
+
+        if not np.isfinite(X).all():
+            raise ValueError("X contains NaN or infinite values.")
+
+        # -------- Prepare data --------   
         many_trials = len(X.shape) == 4
         if not many_trials:
             X = X[np.newaxis, :, :, :]

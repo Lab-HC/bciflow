@@ -164,3 +164,6 @@ cython_debug/
 /data/**/*
 !/data/
 typings/
+data/
+.vscode/settings.json
+.gitignore
