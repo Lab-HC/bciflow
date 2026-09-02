@@ -1,70 +1,65 @@
-'''
-Description
------------
-This module implements the Log Power feature extractor, which computes the logarithm of the 
-power of EEG signals. This feature is commonly used in BCI applications to characterize 
-the energy of brain activity in specific frequency bands.
+"""Module for extracting log-power features in the BCIFlow pipeline."""
 
-This function computes the Log Power of the input EEG data. The Log Power is calculated 
-as the logarithm of the mean squared amplitude of the signal. The result is stored in 
-the dictionary under the key 'X'.
-
-Function
-------------
-'''
 import numpy as np
 
-def logpower(eegdata: dict, flating: bool = False) -> dict:
-    ''' 
+def __set_default_logpower_params(
+        eegdata: dict[str, any]
+    ):
+
+    return (
+            eegdata
+        )
+
+def __check_logpower_params(
+            eegdata: dict[str, any]
+        ):
+
+    (
+            eegdata
+        ) = __set_default_logpower_params(
+                eegdata
+            )
+
+    return (
+            eegdata
+        )
+
+def logpower(
+        eegdata: dict[str, any]
+    ) -> dict[str, any]:
+    """Extract log-power features from the EEG data.
+    
     Parameters
     ----------
     eegdata : dict
-        The input data, where the key 'X' holds the raw signal.
-    flating : bool, optional
-        If True, the output data is returned in a flattened format (default is False).
-
+        A dictionary containing the EEG data and metadata.
     Returns
     -------
-    output : dict
-        The transformed data, with the Log Power stored under the key 'X'.
-    '''
-    # -------- Validate eegdata --------
-    if not isinstance(eegdata, dict):
-        raise ValueError("eegdata must be a dictionary.")
+    dict[str, any]
+        The EEG data with log-power features extracted.
+    """
 
-    if 'X' not in eegdata:
-        raise ValueError("eegdata must contain the key 'X'.")
+    (
+            eegdata
+        ) = __check_logpower_params(
+                eegdata
+            )
 
-    if not isinstance(flating, bool):
-        raise ValueError("flating must be a boolean value.")
+    x = eegdata['X'].copy()
+    oldshape = x.shape
+    trial_bands = int(np.prod(x.shape) / x.shape[-1])
+    x = x.reshape(trial_bands, x.shape[-1])
 
-    X = eegdata['X'].copy()
+    _x = []
+    for signal_ in range(x.shape[0]):
+        filtered = np.log(np.mean(x[signal_]**2))
+        _x.append(filtered)
 
-    # -------- Validate X --------
-    if not isinstance(X, np.ndarray):
-        raise ValueError("eegdata['X'] must be a numpy array.")
+    _x = np.array(_x)
 
-    if X.ndim < 2:
-        raise ValueError("X must have at least two dimensions.")
+    _x = _x.reshape(*oldshape[:-1])
 
-    if not np.isfinite(X).all():
-        raise ValueError("X contains NaN or infinite values.")
-
-    # -------- Prepare data --------
-    X = X.reshape((np.prod(X.shape[:-1]), X.shape[-1]))
-
-    X_ = []
-    for signal_ in range(X.shape[0]):
-        filtered = np.log(np.mean(X[signal_]**2))
-        X_.append(filtered)
-
-    X_ = np.array(X_)
-    shape = eegdata['X'].shape
-    if flating:
-        X_ = X_.reshape((shape[0], np.prod(shape[1:-1])))
-    else:
-        X_ = X_.reshape((shape[0], shape[1], np.prod(shape[2:-1])))
-
-    eegdata['X'] = X_
+    eegdata['X-shape'] = eegdata['X-shape'][:-1]
+    eegdata['X'] = _x
 
     return eegdata
